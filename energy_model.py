@@ -1,14 +1,7 @@
 import numpy as np
 
 def Power(v):
-    """Power consumption at speed v
-
-    Args:
-        v (float): Drone speed
-
-    Returns:
-        float: Power consumption
-    """
+    """Power consumption at speed v."""
     W = 20         # Weight
     p = 1.225      # Air density
     R = 0.4        # Rotor radius in meter
@@ -31,3 +24,21 @@ def Power(v):
     parasite = 0.5*d_0*p*s*A*np.power(v,3)
     
     return blade_profile + induced + parasite
+
+def energy(d, t):
+    """Returns the minimum energy consumed to travel a distance d in a time t."""
+
+    # if distance == 0 than hovers for t seconds
+    if d==0:
+        return Power(0)*t 
+    
+    v_min = d/t             # minimum speed to travel the distance d in time t
+    v_aux = v_min
+    E_aux = Power(v_aux)*t
+
+    for v in np.arange(v_min, 30.0, 0.1): # numerical search for minimum power consumption between v_min and 30 m/s
+        if Power(v)*d/v + (t - d/v)*Power(0) < E_aux:
+            v_aux = v
+            E_aux = Power(v)*d/v + (t - d/v)*Power(0)
+    
+    return E_aux
