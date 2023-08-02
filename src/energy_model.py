@@ -25,8 +25,8 @@ def Power(v):
     
     return blade_profile + induced + parasite
 
-def energy(d, t):
-    """Returns the minimum energy consumed to travel a distance d in a time t."""
+def energy(d, t, hover = True):
+    """Returns the minimum energy consumed to travel a distance d in a time t. If hover == False, then the drone lands after arriving at the destination instead of hovering."""
 
     # if distance == 0 than hovers for t seconds
     if d==0:
@@ -37,8 +37,13 @@ def energy(d, t):
     E_aux = Power(v_aux)*t
 
     for v in np.arange(v_min, 30.0, 0.1): # numerical search for minimum power consumption between v_min and 30 m/s
-        if Power(v)*d/v + (t - d/v)*Power(0) < E_aux:
-            v_aux = v
-            E_aux = Power(v)*d/v + (t - d/v)*Power(0)
+        if hover:
+            if Power(v)*d/v + (t - d/v)*Power(0) < E_aux:
+                v_aux = v
+                E_aux = Power(v)*d/v + (t - d/v)*Power(0)
+        else:
+            if Power(v)*d/v < E_aux:
+                v_aux = v
+                E_aux = Power(v)*d/v
     
     return E_aux
