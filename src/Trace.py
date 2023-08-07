@@ -86,3 +86,38 @@ class Trace:
 
         fig.savefig(file_name, bbox_inches='tight', format = "eps")
 
+    def save_trace(self,file_name):
+        """Saves the trace to a file."""
+        trace_file = open(file_name, "w")
+
+        trace_file.write("n_targets = " + str(self.n_targets) + "\n")
+        trace_file.write("observation_period = " + str(self.observation_period) + "\n")
+        trace_file.write("target_speed = " + str(self.target_speed) + "\n")
+        trace_file.write("area_size = " + str(self.area_size) + "\n")
+        trace_file.write("time_step_delta = " + str(self.time_step_delta) + "\n")
+
+        for target_trace in self.trace_set:
+            for target_position in target_trace:
+                trace_file.write(str(target_position[0]) + " " + str(target_position[1]) + "\n")
+
+        trace_file.close()
+
+    def load_trace(self,file_name):
+        """Loads a trace from a file."""
+        trace_file = open(file_name, "r")
+
+        self.n_targets = int(trace_file.readline().split(" = ")[1])
+        self.observation_period = int(trace_file.readline().split(" = ")[1])
+        self.target_speed = float(trace_file.readline().split(" = ")[1])
+        self.area_size = float(trace_file.readline().split(" = ")[1])
+        self.time_step_delta = float(trace_file.readline().split(" = ")[1])
+
+        self.trace_set = []
+        for i in range(self.n_targets):
+            target_trace = []
+            for t in range(self.observation_period):
+                target_position = trace_file.readline().split(" ")
+                target_trace.append((float(target_position[0]),float(target_position[1])))
+            self.trace_set.append(target_trace)
+
+        trace_file.close()
