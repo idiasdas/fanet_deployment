@@ -17,3 +17,10 @@ class Trace:
         self.target_speed = target_speed                
         self.area_size = area_size                      
         self.time_step_delta = time_step_delta          
+
+    def generate_random_direction(self):
+        """Generates a random normalized vector of dimension 2, returns as a tuple."""
+        direction = (np.random.rand(2) - 0.5)*2
+        normalized_direction = tuple(direction/np.linalg.norm(direction))
+        return normalized_direction
+
