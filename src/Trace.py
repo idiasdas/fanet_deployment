@@ -44,3 +44,10 @@ class Trace:
                 new_y = abs(new_y)
             target_trace += [(new_x, new_y)]
         return target_trace
+
+    def generate_all_traces(self):
+        """Generates a list with the traces of all targets. """
+        self.trace_set = []
+        for i in range(self.n_targets):
+            self.trace_set.append(self.generate_target_trace())
+
