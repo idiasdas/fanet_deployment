@@ -18,6 +18,8 @@ class Trace:
         self.area_size = area_size                      
         self.time_step_delta = time_step_delta          
 
+        self.generate_all_traces()
+
     def generate_random_direction(self):
         """Generates a random normalized vector of dimension 2, returns as a tuple."""
         direction = (np.random.rand(2) - 0.5)*2
