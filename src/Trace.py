@@ -64,3 +64,25 @@ class Trace:
                 if not feasible:
                     return False
         return True
+
+    def plot_trace(self, file_name = "trace_plot.eps"):
+        """Plots the trace of all targets."""
+        fig, ax = plt.subplots(figsize=(6,4))
+        ax.set(xlim=(0, self.area_size), ylim=(0, self.area_size))
+        plt.xticks(fontsize=16)
+        plt.yticks(fontsize=16)
+
+        # Ploting the history of the sensors
+        for target_trace in self.trace_set:
+            X_target = [target_position[0] for target_position in target_trace]
+            Y_target = [target_position[1] for target_position in target_trace]
+            edges = []
+            for time_step in range(1,self.observation_period):
+                edges.append([target_trace[time_step-1],target_trace[time_step]])
+            lines = mc.LineCollection(edges , linestyle=":",color = "blue")# lines between subsequent positions
+            
+            ax.scatter(X_target,Y_target, color='green',marker="x",s=120) # targets will be green X
+            ax.add_collection(lines)                      
+
+        fig.savefig(file_name, bbox_inches='tight', format = "eps")
+
