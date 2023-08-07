@@ -36,12 +36,14 @@ def energy(d, t, hover = True):
     v_aux = v_min
     E_aux = Power(v_aux)*t
 
-    for v in np.arange(v_min, 30.0, 0.1): # numerical search for minimum power consumption between v_min and 30 m/s
-        if hover:
+    # numerical search for minimum power consumption between v_min and 30 m/s
+    if hover:
+        for v in np.arange(v_min, 30.0, 0.1): 
             if Power(v)*d/v + (t - d/v)*Power(0) < E_aux:
                 v_aux = v
                 E_aux = Power(v)*d/v + (t - d/v)*Power(0)
-        else:
+    else:
+        for v in np.arange(v_min, 30.0, 0.1): 
             if Power(v)*d/v < E_aux:
                 v_aux = v
                 E_aux = Power(v)*d/v
