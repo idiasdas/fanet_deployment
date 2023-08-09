@@ -1,4 +1,4 @@
-import numpy as np
+from import_file import *
 
 def Power(v):
     """Power consumption at speed v."""
