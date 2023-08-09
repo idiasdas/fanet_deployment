@@ -1,7 +1,7 @@
 from import_file import *
 
 class Trace:
-    def __init__(self, n_targets = 5, observation_period = 5, target_speed = 5, area_size = 100, time_step_delta=1, load_file = None):
+    def __init__(self, n_targets = 5, observation_period = 5, target_speed = 5, area_size = 100, time_step_delta=1, load_file = ""):
         """Represents the trajectories of n targets inside an square area A during observation_period time steps. The targets move at a constant speed target_speed. The area A has size area_size^2 and the time between time steps is time_step_delta. If a load file is provided, the trace is loaded from the file. Otherwise, a new trace is generated. 
 
         Args:
@@ -10,10 +10,10 @@ class Trace:
             target_speed (float, optional): Targets speed in m/s. Defaults to 5.
             area_size (float, optional): Lenght of the square area A. Defaults to 100.
             time_step_delta (float, optional): Amount of seconds between time steps. Defaults to 1.
-            load_file (str, optional): path + name of file with trace description. Refer to Trace.save_trace() to see the file format. Defaults to None.
+            load_file (str, optional): path + name of file with trace description. Refer to Trace.save_trace() to see the file format. Defaults to "".
         """
 
-        if load_file != None:        
+        if load_file == "":        
             self.n_targets = n_targets                      
             self.observation_period = observation_period    
             self.target_speed = target_speed                
