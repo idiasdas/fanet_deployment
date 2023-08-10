@@ -31,7 +31,7 @@ class Trace:
         return normalized_direction
 
     def generate_target_trace(self):
-        """Generates a sequence of positions (list of tuples) of n_targets inside the area A = (x_max, y_max) with speed target_speed. Random way point model"""
+        """Generates a sequence of positions (list of tuples) of one target inside the area A = (x_max, y_max) with speed target_speed. Random way point model"""
         target_trace = [tuple(np.random.rand(2)*self.area_size)]  # initial position
         for t in range(self.observation_period - 1):
             # Last position plus random direction times speed times time. Bounces off the walls. 
