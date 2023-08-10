@@ -1,6 +1,6 @@
+import os
 import sys
-this_dirctory = __file__.split('trace_test.py')[0]  # directory of trace_test.py
-sys.path.append(this_dirctory + '../src/')          # Now can import src modules
+sys.path.append(os.path.dirname(__file__) + '/../src/')  # Now can import modules in src
 from import_file import *
 from targets_trace import Trace
 
