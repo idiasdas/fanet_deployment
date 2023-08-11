@@ -76,6 +76,32 @@ class MILPModel:
             """
             return "f_t_"+str(time_step)+"_p_"+str(position_p)+"_q_"+str(position_q)
 
+        def define_all_variables(self):
+            """Defines all the variables of the linear program."""
+            # Defining the variables z_t_p for all t \in T and p \in P \cup {base_station}
+            for t in range(self.observation_period):
+                define_variable(self.var_z_t_p(t,self.input_graph.base_station),0,self.n_available_drones,"I")
+                for p in self.input_graph.deployment_positions:
+                    define_variable(self.var_z_t_p(t,p),0,1,"B")
+            
+            # Defining the variables z_t_drone_p for all t \in T, drone \in n_available_drones and p \in P \cup {base_station}
+            for t in range(self.observation_period):
+                for drone in range(self.n_available_drones):
+                    define_variable(self.var_z_t_drone_p(t,drone,self.input_graph.base_station),0,1,"B")
+                    for p in self.input_graph.deployment_positions:
+                        define_variable(self.var_z_t_drone_p(t,drone,p),0,1,"B")
+
+            # Defining the flow variables f_t_base_p for all t \in T and p \in P
+            for t in range(self.observation_period):
+                for p in self.input_graph.get_positions_in_comm_range(self.input_graph.base_station):
+                    define_variable(self.var_f_t_p_q(t,self.input_graph.base_station,p),0,len(self.input_graph.targets_trace),"C")
+
+            # Defining the flow variables f_t_p_q for all t \in T, p,q \in P and p \neq q
+            for t in range(self.observation_period):
+                for p in self.input_graph.deployment_positions:
+                    for q in self.input_graph.get_positions_in_comm_range(p):
+                        define_variable(self.var_f_t_p_q(t,p,q),0,len(self.input_graph.targets_trace),"C")
+
         def define_constraint(self, constr_name, constr_linear_expr, constr_sense, constr_rhs):
             """Defines a constraint and saves its information in the corresponding lists. This function does not add the constraints to the cplex model. I'm using these lists is because addign variables and constraints in batches is faster than adding them one by one for some reason.
 
