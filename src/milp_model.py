@@ -47,6 +47,35 @@ class MILPModel:
             self.variables_upper_bounds.append(var_up)
             self.variables_types.append(var_type)
 
+        def var_z_t_p(self, time_step, position):
+            """Returns the name of the variable z_t_p. This is a binary variable for p \in P and t \in T that says if a drone is deployed at position p at time step t. For the base station this variable is an integer since the base station can have many drones in it simultaneously.
+            
+            Args:
+                time_step (int): Time step.
+                position (tuple): Position coordinates.
+            """
+            return "z_t_"+str(time_step)+"_p_" + str(position)
+
+        def var_z_t_drone_p(self, time_step, drone, position):
+            """Returns the name of the variable z_t_drone_p. This is a binary variable for p \in P and t \in T and drone \in n_available_drones that says if drone is deployed at position p at time step t.
+            
+            Args:
+                time_step (int): Time step.
+                drone (int): Drone index.
+                position (tuple): Position coordinates.
+            """
+            return "z_t_"+str(time_step)+"_drone_"+str(drone)+"_p_"+str(position)
+
+        def var_f_t_p_q(self, time_step, position_p, position_q):
+            """Returns the name of the variable f_t_p_q. This is a continuous variable for p,q \in P and t \in T that says how much flow is sent from position p to position q at time step t.
+
+            Args:
+                time_step (int): Time step.
+                position_p (tuple): Position coordinates.
+                position_q (tuple): Position coordinates.
+            """
+            return "f_t_"+str(time_step)+"_p_"+str(position_p)+"_q_"+str(position_q)
+
         def define_constraint(self, constr_name, constr_linear_expr, constr_sense, constr_rhs):
             """Defines a constraint and saves its information in the corresponding lists. This function does not add the constraints to the cplex model. I'm using these lists is because addign variables and constraints in batches is faster than adding them one by one for some reason.
 
