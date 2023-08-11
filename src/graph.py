@@ -52,5 +52,5 @@ class Graph:
         Returns:
             list: List of positions that are in communication range of the base station
         """
-        return [p for p in self.deployment_positions if np.linalg.norm(np.array(p) - np.array(position)) <= communication_range]
+        return [p for p in self.deployment_positions if np.linalg.norm(np.array(p) - np.array(position)) <= self.communication_range and p != position]
     
