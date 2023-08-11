@@ -35,8 +35,7 @@ class MILPModel:
         self.constraints_right_hand_side = []
 
         def define_variable(self, var_name, var_lb, var_up, var_type):
-            """Defines a variable and saves its information in the corresponding lists. This function does not add the variables to the cplex model. The reason I'm using these lists is because addign variables and constraints in batches is faster than adding them one by one for some reason.
-
+            """Defines a variable and saves its information in the corresponding lists. This function does not add the variables to the cplex model. I'm using these lists is because addign variables and constraints in batches is faster than adding them one by one for some reason. 
             Args:
                 var_name (str): Name of the variable.
                 var_lb (float): Lower bound of the variable.
@@ -49,7 +48,7 @@ class MILPModel:
             self.variables_types.append(var_type)
 
         def define_constraint(self, constr_name, constr_linear_expr, constr_sense, constr_rhs):
-            """Defines a constraint and saves its information in the corresponding lists. This function does not add the constraints to the cplex model. The reason I'm using these lists is because addign variables and constraints in batches is faster than adding them one by one for some reason.
+            """Defines a constraint and saves its information in the corresponding lists. This function does not add the constraints to the cplex model. I'm using these lists is because addign variables and constraints in batches is faster than adding them one by one for some reason.
 
             Args:
                 constr_name (str): Name of the constraint.
