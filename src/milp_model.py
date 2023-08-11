@@ -61,3 +61,11 @@ class MILPModel:
             self.constraints_linear_expr.append(constr_linear_expr)
             self.constraints_sense.append(constr_sense)
             self.constraints_right_hand_side.append(constr_rhs)
+
+        def add_variables_to_cplex(self):
+            """Adds the variables to the cplex model."""
+            self.cplex_model.variables.add(names = self.variables_names, lb = self.variables_lower_bounds, ub = self.variables_upper_bounds, types = self.variables_types)
+
+        def add_constraints_to_cplex(self):
+            """Adds the constraints to the cplex model."""
+            self.cplex_model.linear_constraints.add(lin_expr = self.constraints_linear_expr, senses = self.constraints_sense, rhs = self.constraints_right_hand_side, names = self.constraints_names)
