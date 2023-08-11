@@ -23,3 +23,14 @@ class MILPModel:
 
         self.cplex_model = cplex.Cplex()
         self.cplex_model.set_problem_name(model_name)
+
+        self.variables_names = []
+        self.variables_lower_bounds = []
+        self.variables_upper_bounds = []
+        self.variables_types = []
+
+        self.constraints_names = []
+        self.constraints_linear_expr = []
+        self.constraints_sense = []
+        self.constraints_right_hand_side = []
+
