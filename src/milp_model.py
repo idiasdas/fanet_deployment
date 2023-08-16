@@ -1,4 +1,9 @@
-from import_file import *
+from typing import Optional
+try:
+    import cplex
+except ImportError:
+    print("Error while importing cplex. Please refer to the README.md file for instructions on how to install cplex.")
+    exit(1)
 
 class MILPModel:
     def __init__(self, n_available_drones, observation_period, time_step_delta, communication_range, coverage_range, input_graph, model_name = "MILP_Model"):
