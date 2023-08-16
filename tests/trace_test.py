@@ -1,6 +1,7 @@
 import os
 import sys
-sys.path.append(os.path.dirname(__file__) + '/../src/')  # Now can import modules in src
+this_dirctory = os.path.dirname(__file__)
+sys.path.append( this_dirctory+ '/../src/')  # Now can import modules in src
 from targets_trace import Trace
 
 print(" - Testing Trace class")
@@ -14,13 +15,13 @@ print(out_txt.format(variable = "area_size", test_value = str(sensors_trace.area
 print(out_txt.format(variable = "time_step_delta", test_value = str(sensors_trace.time_step_delta)))
 
 print(" - Plotting trace to " + this_dirctory + "out/test_trace_plot.eps")
-sensors_trace.plot_trace(this_dirctory + "out/test_trace_plot.eps")
+sensors_trace.plot_trace(this_dirctory + "/out/test_trace_plot.eps")
 
 print(" - Saving trace to out/test_trace.txt")
-sensors_trace.save_trace(this_dirctory + "out/test_trace.txt")
+sensors_trace.save_trace(this_dirctory + "/out/test_trace.txt")
 
 print(" - Loading trace from out/test_trace.txt")
-file_sensors_trace = Trace(load_file = this_dirctory + "out/test_trace.txt")
+file_sensors_trace = Trace(load_file = this_dirctory + "/out/test_trace.txt")
 
 test_result = True
 print(" - Comparing traces")
