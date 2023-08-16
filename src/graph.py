@@ -6,16 +6,14 @@ except ImportError:
     exit(1)
 
 class Graph:
-    def __init__(self, size_A: float, heights: float, base_station: tuple, n_drones: int, n_positions_per_axis: int, observation_period: int, communication_range: float, coverage_range: float, targets_trace: Optional[list] = []):
+    def __init__(self, size_A: float, heights: float, base_station: tuple,n_positions_per_axis: int, communication_range: float, coverage_range: float, targets_trace: Optional[list] = []):
         """Describes the graph form which we build the linear programs.
 
         Args:
             size_A: Lenght of the square area A
             heights: Which heights are allowed
             base_station: Coordinates of the base station
-            n_drones: Amount of drones available
             n_positions_per_axis: How many slices we want to divide the area into for each axis. The resulting grid will have n_positions_per_axis^2 positions.
-            observation_period: Amount of time steps
             communication_range: Maximum distance for communications drone to drone and base to drone 
             coverage_range: Maximum distance for communications drone to target
             targets_trace: The coordinates of each sensor for each time step. Defaults to [].
@@ -23,9 +21,7 @@ class Graph:
         self.size_A = size_A
         self.heights = heights
         self.base_station = base_station
-        self.n_drones = n_drones
         self.n_positions_per_axis = n_positions_per_axis
-        self.observation_period = observation_period
         self.communication_range = communication_range
         self.coverage_range = coverage_range
         self.targets_trace = targets_trace
