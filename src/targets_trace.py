@@ -1,5 +1,11 @@
-from import_file import *
-
+try:
+    import numpy as np
+    import matplotlib.pyplot as plt
+    from matplotlib import collections  as mc
+except ImportError:
+    print("Error while importing basic modules. Please refer to the README.md file for instructions on how to install the required modules.")
+    exit(1)
+    
 class Trace:
     def __init__(self, n_targets = 5, observation_period = 5, target_speed = 5, area_size = 100, time_step_delta=1, load_file = ""):
         """Represents the trajectories of n targets inside an square area A during observation_period time steps. The targets move at a constant speed target_speed. The area A has size area_size^2 and the time between time steps is time_step_delta. If a load file is provided, the trace is loaded from the file. Otherwise, a new trace is generated. 
