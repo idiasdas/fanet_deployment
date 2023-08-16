@@ -1,7 +1,7 @@
 from import_file import *
 
-def Power(v):
-    """Power consumption at speed v."""
+def Power(v:float) -> float:
+    """Power consumption of a rotary wing drone at speed v."""
     W = 20         # Weight
     p = 1.225      # Air density
     R = 0.4        # Rotor radius in meter
@@ -25,7 +25,7 @@ def Power(v):
     
     return blade_profile + induced + parasite
 
-def energy(d, t, hover = True):
+def energy(d: float, t: float, hover: bool = True) -> float:
     """Returns the minimum energy consumed to travel a distance d in a time t. If hover == False, then the drone lands after arriving at the destination instead of hovering."""
 
     # if distance == 0 than hovers for t seconds
