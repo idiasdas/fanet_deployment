@@ -1,4 +1,6 @@
-from import_file import *
+from typing import Optional
+import numpy as np
+
 
 def Power(v:float) -> float:
     """Power consumption of a rotary wing drone at speed v."""
@@ -25,7 +27,7 @@ def Power(v:float) -> float:
     
     return blade_profile + induced + parasite
 
-def energy(d: float, t: float, hover: bool = True) -> float:
+def energy(d: float, t: float, hover: Optional[bool] = True) -> float:
     """Returns the minimum energy consumed to travel a distance d in a time t. If hover == False, then the drone lands after arriving at the destination instead of hovering."""
 
     # if distance == 0 than hovers for t seconds
