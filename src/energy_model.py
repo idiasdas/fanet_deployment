@@ -1,6 +1,9 @@
 from typing import Optional
-import numpy as np
-
+try:
+    import numpy as np
+except ImportError:
+    print("Error while importing basic modules. Please refer to the README.md file for instructions on how to install the required modules.")
+    exit(1)
 
 def Power(v:float) -> float:
     """Power consumption of a rotary wing drone at speed v."""
