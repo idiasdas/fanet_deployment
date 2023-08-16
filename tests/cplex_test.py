@@ -79,9 +79,9 @@ cplex_model.objective.set_sense(cplex_model.objective.sense.maximize)
 cplex_model.solve()
 if cplex_model.solution.get_status() == 101:
     print("Optimal solution found")
-    print("CPLEX TEST PASSED")
+    print("TEST RESULT = OK")
 else:
-    print("CPLEX TEST FAILED")
+    print("TEST RESULT = FAILED")
 
 # FINISHES CPLEX
 cplex_model.end()
