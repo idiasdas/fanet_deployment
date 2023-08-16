@@ -12,7 +12,7 @@
         x_1 = 2.22
         x_2 = 3.55
     ----------------------------------------
-    You can see this as a small example of how to use the cplex module.
+    You can see this as a small example of how to use the cplex module (or not).
     The relevant documentation is:
         * CPLEX CLASS
             - https://www.ibm.com/docs/en/icos/20.1.0?topic=classes-cplexcplex#problem_type
@@ -31,12 +31,10 @@ import sys
 sys.path.append(os.path.dirname(__file__) + '/../src/')  # Now can import modules in src
 
 try:
-    from import_file import *
-except:
-    print("ERROR: Cannot import from import_file.py")
-    print("Make sure you have installed the requirements including cplex. Refer to README.md for more information.")
-    print("CPLEX TEST FAILED")
-    exit()
+    import cplex
+except ImportError:
+    print("Error importing required modules. Refer to README.md for more information.")
+    exit(1)
 
 # CREATES THE CPLEX MODEL
 cplex_model = cplex.Cplex()
