@@ -7,16 +7,16 @@ except ImportError:
     exit(1)
     
 class Trace:
-    def __init__(self, n_targets = 5, observation_period = 5, target_speed = 5, area_size = 100, time_step_delta=1, load_file = ""):
+    def __init__(self, n_targets: Optional[int] = 5, observation_period: Optional[int] = 5, target_speed: Optional[float] = 5, area_size: Optional[float] = 100, time_step_delta: Optional[float] = 1, load_file: Optional[str] = ""):
         """Represents the trajectories of n targets inside an square area A during observation_period time steps. The targets move at a constant speed target_speed. The area A has size area_size^2 and the time between time steps is time_step_delta. If a load file is provided, the trace is loaded from the file. Otherwise, a new trace is generated. 
 
         Args:
-            n_targets (int, optional): Number of targets. Defaults to 5.
-            observation_period (int, optional): Number of time steps. Defaults to 5.
-            target_speed (float, optional): Targets speed in m/s. Defaults to 5.
-            area_size (float, optional): Lenght of the square area A. Defaults to 100.
-            time_step_delta (float, optional): Amount of seconds between time steps. Defaults to 1.
-            load_file (str, optional): path + name of file with trace description. Refer to Trace.save_trace() to see the file format. Defaults to "".
+            n_targets: Number of targets. Defaults to 5.
+            observation_period: Number of time steps. Defaults to 5.
+            target_speed: Targets speed in m/s. Defaults to 5.
+            area_size: Lenght of the square area A. Defaults to 100.
+            time_step_delta: Amount of seconds between time steps. Defaults to 1.
+            load_file: path + name of file with trace description. Refer to Trace.save_trace() to see the file format. Defaults to "".
         """
 
         if load_file == "":        
@@ -30,13 +30,13 @@ class Trace:
         else:
             self.load_trace(load_file)
             
-    def generate_random_direction(self):
+    def generate_random_direction(self) -> tuple:
         """Generates a random normalized vector of dimension 2, returns as a tuple."""
         direction = (np.random.rand(2) - 0.5)*2
         normalized_direction = tuple(direction/np.linalg.norm(direction))
         return normalized_direction
 
-    def generate_target_trace(self):
+    def generate_target_trace(self) -> list:
         """Generates a sequence of positions (list of tuples) of one target inside the area A = (x_max, y_max) with speed target_speed. Random way point model"""
         target_trace = [tuple(np.random.rand(2)*self.area_size)]  # initial position
         for t in range(self.observation_period - 1):
@@ -58,12 +58,12 @@ class Trace:
         return target_trace
 
     def generate_all_traces(self):
-        """Generates a list with the traces of all targets. """
+        """Generates a list with the traces of all targets. Assigns it to instance variable trace_set."""
         self.trace_set = []
         for i in range(self.n_targets):
             self.trace_set.append(self.generate_target_trace())
 
-    def verify_feasiblity(self, deployment_positions, coverage_range):
+    def verify_feasiblity(self, deployment_positions: list, coverage_range: float) -> bool:
         """Verifies a set of deployment positions with a given coverage range can cover all targets at all time steps. If any target cannot be covered at any time step, returns False."""
         for target_trace in self.trace_set:
             for target_position in target_trace:
@@ -75,7 +75,7 @@ class Trace:
                     return False
         return True
 
-    def plot_trace(self, file_name = "trace_plot.eps"):
+    def plot_trace(self, file_name: Optional[str] = "trace_plot.eps"):
         """Plots the trace of all targets."""
         fig, ax = plt.subplots(figsize=(6,4))
         ax.set(xlim=(0, self.area_size), ylim=(0, self.area_size))
@@ -96,8 +96,12 @@ class Trace:
 
         fig.savefig(file_name, bbox_inches='tight', format = "eps")
 
-    def save_trace(self,file_name):
-        """Saves the trace to a file."""
+    def save_trace(self,file_name: str):
+        """Saves the trace to a file.
+        
+        Args:
+            file_name: path + name of file where the trace will be saved.
+        """
         trace_file = open(file_name, "w")
 
         trace_file.write("n_targets = " + str(self.n_targets) + "\n")
@@ -112,8 +116,12 @@ class Trace:
 
         trace_file.close()
 
-    def load_trace(self,file_name):
-        """Loads a trace from a file."""
+    def load_trace(self,file_name: str):
+        """Loads a trace from a file.
+        
+        Args:
+            file_name: path + name of file where the trace is saved.
+        """
         trace_file = open(file_name, "r")
 
         self.n_targets = int(trace_file.readline().split(" = ")[1])
