@@ -54,3 +54,21 @@ class Graph:
         """
         return [p for p in self.deployment_positions if np.linalg.norm(np.array(p) - np.array(position)) <= self.communication_range and p != position]
     
+    def verify_trace_feasiblity(self, targets_trace) -> bool:
+        """Verifies if the trace is feasible, i.e., if all targets are covered by at least one position.
+
+        Args:
+            targets_trace: List of positions of the targets
+
+        Returns:
+            bool: _description_
+        """
+        if targets_trace == []:
+            return False
+
+        for target_trace in targets_trace:
+            for target_position in target_trace: # Each target visits a sequence of positions depending on the observation period
+                if self.get_target_coverage(target_position) == []:
+                    return False
+        
+        return True
