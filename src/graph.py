@@ -40,7 +40,7 @@ class Graph:
         Returns:
             List of positions in P that cover the target position
         """
-        return [position for position in self.deployment_positions if np.linalg.norm(np.array(position) - np.array(target_position)) <= self.coverage_range]
+        return [position for position in self.deployment_positions if np.linalg.norm(np.array((position[0],position[1],0)) - np.array(target_position)) <= self.coverage_tan_angle*position[2]]
     
     def get_positions_in_comm_range(self, position: tuple) -> list:
         """Returns the set of positions that are in communication range with the given position.
