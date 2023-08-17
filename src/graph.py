@@ -61,7 +61,7 @@ class Graph:
             targets_trace: List of positions of the targets
 
         Returns:
-            bool: _description_
+            bool: True if every target position is covered by at least one position. False otherwise.
         """
         if targets_trace == []:
             return False
