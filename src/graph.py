@@ -23,7 +23,6 @@ class Graph:
         self.n_positions_per_axis = n_positions_per_axis
         self.communication_range = communication_range
         self.coverage_tan_angle = coverage_tan_angle
-        self.targets_trace = targets_trace
 
         self.set_position_grid()
 
