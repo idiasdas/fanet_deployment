@@ -65,18 +65,6 @@ class Trace:
         for i in range(self.n_targets):
             self.trace_set.append(self.generate_target_trace())
 
-    def verify_feasiblity(self, deployment_positions: list, coverage_range: float) -> bool:
-        """Verifies a set of deployment positions with a given coverage range can cover all targets at all time steps. If any target cannot be covered at any time step, returns False."""
-        for target_trace in self.trace_set:
-            for target_position in target_trace:
-                feasible = False
-                for deployment_position in deployment_positions:
-                    if np.linalg.norm(target_position - deployment_position) <= coverage_range:
-                        feasible = True
-                if not feasible:
-                    return False
-        return True
-
     def plot_trace(self, file_name: Optional[str] = "trace_plot.eps"):
         """Plots the trace of all targets."""
         fig, ax = plt.subplots(figsize=(6,4))
