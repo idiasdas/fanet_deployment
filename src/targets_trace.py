@@ -41,12 +41,13 @@ class Trace:
         """Generates a sequence of positions (list of tuples) of one target inside the area A = (x_max, y_max) with speed target_speed. Random way point model"""
         target_trace = [tuple(np.random.rand(2)*self.area_size)]  # initial position
         for t in range(self.observation_period - 1):
-            # Last position plus random direction times speed times time. Bounces off the walls. 
+            # Last position plus random direction times speed times time. 
             direction = self.generate_random_direction()
             last_x = target_trace[-1][0]
             last_y = target_trace[-1][1]
             new_x = last_x + direction[0] * self.target_speed * self.time_step_delta
             new_y = last_y + direction[1] * self.target_speed * self.time_step_delta
+            # Bounces off the walls.
             if new_x > self.area_size:
                 new_x = self.area_size - (new_x - self.area_size)
             if new_x < 0:
