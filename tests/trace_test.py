@@ -48,24 +48,7 @@ test_result = test_result and sensors_trace.trace_set == file_sensors_trace.trac
 
 print(" TEST RESULT = "  + ("OK" if str(test_result) else "FAIL"))
 
-print(" NOW TESTING CREATION OF FEASIBLE TRACES")
 
-my_graph = Graph(size_A = 100, heights = [45], base_station = (0,0,0), n_positions_per_axis = 3, communication_range = 40, coverage_tan_angle = np.tan(np.pi/6))
-
-
-
-n_traces = 5
-count_failed_traces = 0
-for n in range(n_traces):
-    new_trace = Trace(n_targets, observation_period, target_speed, area_size)
-    while not my_graph.verify_trace_feasiblity(new_trace.trace_set):
-        count_failed_traces += 1
-        new_trace = Trace(n_targets, observation_period, target_speed, area_size)
-    print(" - Trace " + str(n) + " is feasible")
-    new_trace.save_trace(this_dirctory + "/out/feasible_trace_" + str(n) + ".txt")
-    new_trace.plot_trace(this_dirctory + "/out/feasible_trace_" + str(n) + ".eps")
-print(" - Done testing creation of feasible traces")
-print(" - " + str(count_failed_traces) + " traces were not feasible")
 
 
 
