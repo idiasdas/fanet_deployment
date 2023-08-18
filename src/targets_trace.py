@@ -19,18 +19,17 @@ class Trace:
             time_step_delta: Amount of seconds between time steps. Defaults to 1.
             load_file: path + name of file with trace description. Refer to Trace.save_trace() to see the file format. Defaults to "".
         """
+        if load_file == "":
+            self.n_targets = n_targets
+            self.observation_period = observation_period
+            self.target_speed = target_speed
+            self.area_size = area_size
+            self.time_step_delta = time_step_delta
 
-        if load_file == "":        
-            self.n_targets = n_targets                      
-            self.observation_period = observation_period    
-            self.target_speed = target_speed                
-            self.area_size = area_size                      
-            self.time_step_delta = time_step_delta          
-
-            self.generate_all_traces()
+            self.trace_set = self.generate_all_traces()
         else:
             self.load_trace(load_file)
-            
+
     def generate_random_direction(self) -> tuple:
         """Generates a random normalized vector of dimension 2, returns as a tuple."""
         direction = (np.random.rand(2) - 0.5)*2
@@ -59,11 +58,16 @@ class Trace:
             target_trace += [(new_x, new_y)]
         return target_trace
 
-    def generate_all_traces(self):
-        """Generates a list with the traces of all targets. Assigns it to instance variable trace_set."""
-        self.trace_set = []
+    def generate_all_traces(self) -> list:
+        """Generates a list with the traces of all targets.
+
+        Returns:
+            List of traces, where each trace is a list of positions (tuples (x,y)) of one target.
+        """
+        trace_set = []
         for i in range(self.n_targets):
-            self.trace_set.append(self.generate_target_trace())
+            trace_set.append(self.generate_target_trace())
+        return trace_set
 
     def plot_trace(self, file_name: Optional[str] = "trace_plot.eps"):
         """Plots the trace of all targets."""
