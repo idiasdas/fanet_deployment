@@ -18,3 +18,7 @@ generate-traces:
 clean-traces:
 	rm -f files/traces/*.txt
 
+# Verifies if cplex is installed and accessible
+.PHONY: check-cplex
+check-cplex:
+	@python -c "import cplex" 2>/dev/null && echo "cplex is installed and accessible." || echo "cplex is not accessible. Please refer to the README for more information."
