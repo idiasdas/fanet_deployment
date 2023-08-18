@@ -1,4 +1,4 @@
-# Optimizing drones trajectory to form a flying newtwork
+# Optimizing drones trajectory to form a flying network
 
 This project is an organized version of the experiments presented on:
 
