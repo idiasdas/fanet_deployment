@@ -50,7 +50,7 @@ You will need to create the targets traces (sequence of sensors positions) that 
 make generate-traces
 ```
 
-This command verifies if the traces already exist and if they don't, creates them. If you want to delete the current traces use:
+This command verifies if the traces already exist and if they don't, creates them. These traces are saved to `fanet_deployment/files/traces/`. If you want to delete the current traces use:
 
 ```bash
 make clean-traces
