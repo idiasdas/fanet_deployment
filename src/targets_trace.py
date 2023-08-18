@@ -1,15 +1,16 @@
 from typing import Optional
+
 try:
     import numpy as np
     import matplotlib.pyplot as plt
-    from matplotlib import collections  as mc
+    from matplotlib import collections as mc
 except ImportError:
     print("Error while importing basic modules. Please refer to the README.md file for instructions on how to install the required modules.")
     exit(1)
-    
+
 class Trace:
     def __init__(self, n_targets: Optional[int] = 5, observation_period: Optional[int] = 5, target_speed: Optional[float] = 5, area_size: Optional[float] = 100, time_step_delta: Optional[float] = 1, load_file: Optional[str] = ""):
-        """Represents the trajectories of n targets inside an square area A during observation_period time steps. The targets move at a constant speed target_speed. The area A has size area_size^2 and the time between time steps is time_step_delta. If a load file is provided, the trace is loaded from the file. Otherwise, a new trace is generated. 
+        """Represents the trajectories of n targets inside an square area A during observation_period time steps. The targets move at a constant speed target_speed. The area A has size area_size^2 and the time between time steps is time_step_delta. If a load file is provided, the trace is loaded from the file. Otherwise, a new trace is generated.
 
         Args:
             n_targets: Number of targets. Defaults to 5.
@@ -32,15 +33,16 @@ class Trace:
 
     def generate_random_direction(self) -> tuple:
         """Generates a random normalized vector of dimension 2, returns as a tuple."""
-        direction = (np.random.rand(2) - 0.5)*2
-        normalized_direction = tuple(direction/np.linalg.norm(direction))
+        direction = (np.random.rand(2) - 0.5) * 2
+        normalized_direction = tuple(direction / np.linalg.norm(direction))
         return normalized_direction
 
     def generate_target_trace(self) -> list:
-        """Generates a sequence of positions (list of tuples) of one target inside the area A = (x_max, y_max) with speed target_speed. Random way point model"""
-        target_trace = [tuple(np.random.rand(2)*self.area_size)]  # initial position
+        """Generates a sequence o`f positions (list of tuples) of one target inside the area A = (x_max, y_max) with speed target_speed. Random way point model"""
+        target_trace = [tuple(np.random.rand(
+            2) * self.area_size)]  # initial position
         for t in range(self.observation_period - 1):
-            # Last position plus random direction times speed times time. 
+            # Last position plus random direction times speed times time.
             direction = self.generate_random_direction()
             last_x = target_trace[-1][0]
             last_y = target_trace[-1][1]
@@ -71,7 +73,7 @@ class Trace:
 
     def plot_trace(self, file_name: Optional[str] = "trace_plot.eps"):
         """Plots the trace of all targets."""
-        fig, ax = plt.subplots(figsize=(6,4))
+        fig, ax = plt.subplots(figsize=(6, 4))
         ax.set(xlim=(0, self.area_size), ylim=(0, self.area_size))
         plt.xticks(fontsize=16)
         plt.yticks(fontsize=16)
@@ -81,18 +83,18 @@ class Trace:
             X_target = [target_position[0] for target_position in target_trace]
             Y_target = [target_position[1] for target_position in target_trace]
             edges = []
-            for time_step in range(1,self.observation_period):
-                edges.append([target_trace[time_step-1],target_trace[time_step]])
-            lines = mc.LineCollection(edges , linestyle=":",color = "blue")# lines between subsequent positions
-            
-            ax.scatter(X_target,Y_target, color='green',marker="x",s=120) # targets will be green X
-            ax.add_collection(lines)                      
+            for time_step in range(1, self.observation_period):
+                edges.append([target_trace[time_step - 1], target_trace[time_step]])
+            lines = mc.LineCollection(edges, linestyle=":", color="blue")  # lines between subsequent positions
 
-        fig.savefig(file_name, bbox_inches='tight', format = "eps")
+            ax.scatter(X_target, Y_target, color="green", marker="x", s=120)  # targets will be green X
+            ax.add_collection(lines)
 
-    def save_trace(self,file_name: str):
+        fig.savefig(file_name, bbox_inches="tight", format="eps")
+
+    def save_trace(self, file_name: str):
         """Saves the trace to a file.
-        
+
         Args:
             file_name: path + name of file where the trace will be saved.
         """
@@ -110,9 +112,9 @@ class Trace:
 
         trace_file.close()
 
-    def load_trace(self,file_name: str):
+    def load_trace(self, file_name: str):
         """Loads a trace from a file.
-        
+
         Args:
             file_name: path + name of file where the trace is saved.
         """
@@ -129,7 +131,7 @@ class Trace:
             target_trace = []
             for t in range(self.observation_period):
                 target_position = trace_file.readline().split(" ")
-                target_trace.append((float(target_position[0]),float(target_position[1])))
+                target_trace.append((float(target_position[0]), float(target_position[1])))
             self.trace_set.append(target_trace)
 
         trace_file.close()
