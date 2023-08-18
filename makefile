@@ -8,3 +8,13 @@ setup-venv:
 setup-conda:
 	conda env create -f environment.yml
 
+# Target to run the generate_traces.py script
+.PHONY: generate-traces
+generate-traces:
+	python src/generate_traces.py
+
+# Target to delete all .txt files (traces) from files/traces
+.PHONY: clean-traces
+clean-traces:
+	rm -f files/traces/*.txt
+
