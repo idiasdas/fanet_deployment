@@ -232,8 +232,8 @@ class MILPModel:
         """Adds the constraints to the cplex model."""
         self.cplex_model.linear_constraints.add(lin_expr = self.constraints_linear_expr, senses = self.constraints_sense, rhs = self.constraints_right_hand_side, names = self.constraints_names)
 
-    def set_objective_function(self, objective_function: list, maximize: Optional[bool] = True):
-        """Sets the objective function of the cplex model.
+    def set_objective_function_to_cplex(self, objective_function: list, maximize: Optional[bool] = True):
+        """Sets the objective function to the cplex model.
 
         Args:
             objective_function (list): List of tuples describing the objective function. Each tuple has the form (variable_name (str), coefficient (float)).
