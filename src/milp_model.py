@@ -72,7 +72,7 @@ class MILPModel:
         Returns:
             The name of the variable z_t_p.
         """
-        return "z_t_"+str(time_step)+"_p_" + str(position)
+        return f"z_t_{time_step}_p_{position}"
 
     def var_z_t_drone_p(self, time_step: int, drone: int, position: tuple) -> str:
         """Returns the name of the variable z_t_drone_p. This is a binary variable for p \in P and t \in T and drone \in n_available_drones that says if drone is deployed at position p at time step t. This corresnponds to the variable z^t_{pu} in the papers.
@@ -98,8 +98,21 @@ class MILPModel:
         Returns:
             The name of the variable f_t_p_q.
         """
-        return "f_t_"+str(time_step)+"_p_"+str(position_p)+"_q_"+str(position_q)
 
+    def var_z_t_drone_p_q(self, time_step: int, drone:int, position_p: tuple, position_q: tuple) -> str:
+        """Returns the name of the variable z_t_drone_p_q. This is a binary variable for p,q \in P and t \in T and drone \in n_available_drones that says if drone is deployed at position p at time step t and moves to position q at time step t+1. This corresnponds to the variable z^t_{upq} in the papers.
+
+        Args:
+            time_step (int): The given time step
+            drone (int): The drone id
+            position_p (tuple): The coordinates of position p at time step t
+            position_q (tuple): The coordinates of position q at time step t+1
+
+        Returns:
+            str: The name of the variable z_t_drone_p_q.
+        """
+        return f"z_t_{time_step}_drone_{drone}_p_{position_p}_q_{position_q}"
+    
     def define_all_variables(self):
         """Defines all the variables of the linear program. Uses the function define_variable to save the information of the variables in the corresponding lists. Later the variables must be added to the cplex model."""
         # Defining the variables z_t_p for all t \in T and p \in P \cup {base_station}
