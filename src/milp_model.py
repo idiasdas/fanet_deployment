@@ -330,6 +330,13 @@ class MILPModel:
                             linear_expr_coeff.append(-1)
                             self.define_constraint(constr_name,[linear_expr_var, linear_expr_coeff],self.GREATER_EQUAL,-1) 
     
+    def define_all_constraints(self):
+        """Defines all the constraints of the linear program. Uses the function define_constraint to save the information of the constraints in the corresponding lists. Later the constraints must be added to the cplex model."""
+        self.define_flow_constraints()
+        self.define_drone_flow_constraints()
+        self.define_drone_integrity_constraints()
+        self.define_position_use_constraints()
+        self.define_drone_movement_constraints()
 
     def get_objective_function(self) -> list:
         """ Returns the linear expression of the objective function. 
