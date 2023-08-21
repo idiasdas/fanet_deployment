@@ -1,5 +1,6 @@
 from typing import Optional
 from graph import Graph
+from targets_trace import Trace
 try:
     import cplex
 except ImportError:
@@ -17,14 +18,14 @@ class MILPModel:
     EQUAL = "E"
     LESS_EQUAL = "L"
 
+    def __init__(self, n_available_drones: int, observation_period: int, time_step_delta: float, targets_trace: Trace, input_graph: Graph, model_name: Optional[str] = "MILP_Model"):
         """Builds the linear program to obtain the optimal deployment of drones to cover all targets at all time steps.
 
         Args:
             n_available_drones: Number of drones available.
             observation_period: Amount of time steps.
             time_step_delta: Amount of seconds between time steps.
-            communication_range: The range of drones communication.
-            coverage_range: The maximmum distance for communication between a drone and a target.
+            targets_trace: The trajectories of the targets.
             input_graph: The topology of the problem with the set of deployment positions and targets coordinates at each time step.
             model_name: Name of the cplex model. Defaults to "MILP_Model".
         """        
@@ -32,8 +33,7 @@ class MILPModel:
         self.n_available_drones = n_available_drones
         self.observation_period = observation_period
         self.time_step_delta = time_step_delta
-        self.communication_range = communication_range
-        self.coverage_range = coverage_range
+        self.targets_trace = targets_trace
         self.input_graph = input_graph
 
         self.cplex_model = cplex.Cplex()
