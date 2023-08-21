@@ -92,6 +92,17 @@ class Trace:
 
         fig.savefig(file_name, bbox_inches="tight", format="eps")
 
+    def get_targets_positions_at_time(self, time_step: int) -> list:
+        """Returns the positions of all targets at a given time step.
+
+        Args:
+            time_step: Time step
+
+        Returns:
+            List of positions of all targets at time_step
+        """
+        return [target_trace[time_step] for target_trace in self.trace_set]
+    
     def save_trace(self, file_name: str):
         """Saves the trace to a file.
 
