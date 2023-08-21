@@ -98,8 +98,21 @@ class MILPModel:
         Returns:
             The name of the variable f_t_p_q.
         """
-        return "f_t_"+str(time_step)+"_p_"+str(position_p)+"_q_"+str(position_q)
 
+    def var_z_t_drone_p_q(self, time_step: int, drone:int, position_p: tuple, position_q: tuple) -> str:
+        """Returns the name of the variable z_t_drone_p_q. This is a binary variable for p,q \in P and t \in T and drone \in n_available_drones that says if drone is deployed at position p at time step t and moves to position q at time step t+1. This corresnponds to the variable z^t_{upq} in the papers.
+
+        Args:
+            time_step (int): The given time step
+            drone (int): The drone id
+            position_p (tuple): The coordinates of position p at time step t
+            position_q (tuple): The coordinates of position q at time step t+1
+
+        Returns:
+            str: The name of the variable z_t_drone_p_q.
+        """
+        return f"z_t_{time_step}_drone_{drone}_p_{position_p}_q_{position_q}"
+    
     def define_all_variables(self):
         """Defines all the variables of the linear program. Uses the function define_variable to save the information of the variables in the corresponding lists. Later the variables must be added to the cplex model."""
         # Defining the variables z_t_p for all t \in T and p \in P \cup {base_station}
@@ -232,6 +245,32 @@ class MILPModel:
                     constr_linear_expr.append([self.var_z_t_drone_p(t,drone,p),1])
                 constr_linear_expr.append([self.var_z_t_p(t,p),-1])
                 self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0)
+
+    def define_drone_movement_constraints(self):
+        """Defines the constraints that ensure the definition of the variables z^t_{upq}."""
+        if self.observation_period > 1: # Otherwise there are no drone movements within the observation period
+            for t in range(1,self.observation_period-1):
+                for drone in range(self.n_available_drones):
+                    for p in self.input_graph.deployment_positions:
+                        for q in self.input_graph.get_positions_in_comm_range(p):
+                            constr_linear_expr = []
+                            constr_name = f"drone_mov_constr1_t_{t}_drone_{drone}_p_{p}_q_{q}"
+                            constr_linear_expr.append([self.var_z_t_drone_p_q(t,drone,p,q),1])
+                            constr_linear_expr.append([self.var_z_t_drone_p(t-1,drone,p),-1])
+                            self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0) # z^t_{upq} - z^{t-1} <= 0
+
+                            constr_linear_expr = []
+                            constr_name = f"drone_mov_constr1_t_{t}_drone_{drone}_p_{p}_q_{q}"
+                            constr_linear_expr.append([self.var_z_t_drone_p_q(t,drone,p,q),1])
+                            constr_linear_expr.append([self.var_z_t_drone_p(t,drone,q),-1])
+                            self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0) # z^t_{upq} - z^t_q <= 0
+                            
+                            constr_linear_expr = []
+                            constr_name = f"drone_mov_constr1_t_{t}_drone_{drone}_p_{p}_q_{q}"
+                            constr_linear_expr.append([self.var_z_t_drone_p_q(t,drone,p,q),1])
+                            constr_linear_expr.append([self.var_z_t_p(t,q),-1])
+                            constr_linear_expr.append([self.var_z_t_p(t-1,p),-1])
+                            self.define_constraint(constr_name,constr_linear_expr,self.GREATER_EQUAL,-1) # z^t_{upq} - z^t_q - z^{t-1}_p >= -1
 
     def set_variables_to_cplex(self):
         """Adds the variables to the cplex model."""
