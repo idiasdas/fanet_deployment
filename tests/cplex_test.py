@@ -51,19 +51,20 @@ constraints_right_hand_side = []
 constraints_names = []
 
 # -x_1 + 2x_2 <= 7
-constraints_linear_expr.append(cplex.SparsePair(ind = ["x1", "x2"], val = [-1, 2]))
+# constraints_linear_expr.append(cplex.SparsePair(ind = ["x1", "x2"], val = [-1, 2]))
+constraints_linear_expr.append([["x1", "x2"], [-1, 2]])
 constraints_sense.append("L")
 constraints_right_hand_side.append(7)
 constraints_names.append("constr_1")
 
 # 0.2x_1 x_2 <= 4
-constraints_linear_expr.append(cplex.SparsePair(ind = ["x1", "x2"], val = [0.2, 1]))
+constraints_linear_expr.append([["x1", "x2"], [0.2, 1]])
 constraints_sense.append("L")
 constraints_right_hand_side.append(4)
 constraints_names.append("constr_2")
 
 # 2x_1 + x_2 <= 8
-constraints_linear_expr.append(cplex.SparsePair(ind = ["x1", "x2"], val = [2, 1]))
+constraints_linear_expr.append([["x1", "x2"], [2, 1]])
 constraints_sense.append("L")
 constraints_right_hand_side.append(8)
 constraints_names.append("constr_3")
