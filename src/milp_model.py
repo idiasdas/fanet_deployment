@@ -64,7 +64,7 @@ class MILPModel:
         self.variables_types.append(var_type)
 
     def var_z_t_p(self, time_step: int, position: tuple) -> str:
-        """Returns the name of the variable z_t_p. This is a binary variable for p \in P and t \in T that says if a drone is deployed at position p at time step t. For the base station this variable is an integer since the base station can have many drones in it simultaneously.
+        """Returns the name of the variable z_t_p. This is a binary variable for p \in P and t \in T that says if a drone is deployed at position p at time step t. For the base station this variable is an integer since the base station can have many drones in it simultaneously. This corresnponds to the variable z^t_p in the papers.
         
         Args:
             time_step: Time step.
@@ -75,7 +75,7 @@ class MILPModel:
         return "z_t_"+str(time_step)+"_p_" + str(position)
 
     def var_z_t_drone_p(self, time_step: int, drone: int, position: tuple) -> str:
-        """Returns the name of the variable z_t_drone_p. This is a binary variable for p \in P and t \in T and drone \in n_available_drones that says if drone is deployed at position p at time step t.
+        """Returns the name of the variable z_t_drone_p. This is a binary variable for p \in P and t \in T and drone \in n_available_drones that says if drone is deployed at position p at time step t. This corresnponds to the variable z^t_{pu} in the papers.
         
         Args:
             time_step: Time step.
@@ -88,7 +88,7 @@ class MILPModel:
         return "z_t_"+str(time_step)+"_drone_"+str(drone)+"_p_"+str(position)
 
     def var_f_t_p_q(self, time_step: int, position_p: tuple, position_q: tuple) -> str:
-        """Returns the name of the variable f_t_p_q. This is a continuous variable for p,q \in P and t \in T that says how much flow is sent from position p to position q at time step t.
+        """Returns the name of the variable f_t_p_q. This is a continuous variable for p,q \in P and t \in T that says how much flow is sent from position p to position q at time step t. This corresnponds to the variable f^t_{pq} in the papers.
 
         Args:
             time_step: Time step.
