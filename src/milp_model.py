@@ -18,7 +18,7 @@ class MILPModel:
     EQUAL = "E"
     LESS_EQUAL = "L"
 
-    def __init__(self, n_available_drones: int, observation_period: int, time_step_delta: float, targets_trace: Trace, input_graph: Graph, model_name: Optional[str] = "MILP_Model"):
+    def __init__(self, n_available_drones: int, observation_period: int, time_step_delta: float, targets_trace: Trace, input_graph: Graph, alpha: float, beta: float, model_name: Optional[str] = "MILP_Model"):
         """Builds the linear program to obtain the optimal deployment of drones to cover all targets at all time steps.
 
         Args:
@@ -27,6 +27,8 @@ class MILPModel:
             time_step_delta: Amount of seconds between time steps.
             targets_trace: The trajectories of the targets.
             input_graph: The topology of the problem with the set of deployment positions and targets coordinates at each time step.
+            alpha: Weight of objective function metrics.
+            beta: Objective function normalization parameter.
             model_name: Name of the cplex model. Defaults to "MILP_Model".
         """        
 
@@ -35,6 +37,8 @@ class MILPModel:
         self.time_step_delta = time_step_delta
         self.targets_trace = targets_trace
         self.input_graph = input_graph
+        self.alpha = alpha
+        self.beta = beta
 
         self.cplex_model = cplex.Cplex()
         self.cplex_model.set_problem_name(model_name)
