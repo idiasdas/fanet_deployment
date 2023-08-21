@@ -11,7 +11,12 @@ class MILPModel:
     BINARY_VARIABLE = "B"
     INTEGER_VARIABLE = "I"
     CONTINUOUS_VARIABLE = "C"
-    def __init__(self, n_available_drones: int, observation_period: int, time_step_delta: float, communication_range: float, coverage_range: float, input_graph: Graph, model_name: Optional[str] = "MILP_Model"):
+
+    # Constants for constraints sense
+    GREATER_EQUAL = "G"
+    EQUAL = "E"
+    LESS_EQUAL = "L"
+
         """Builds the linear program to obtain the optimal deployment of drones to cover all targets at all time steps.
 
         Args:
