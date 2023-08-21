@@ -274,11 +274,29 @@ class MILPModel:
                             
                             constr_linear_expr = []
                             constr_name = f"drone_mov_constr1_t_{t}_drone_{drone}_p_{p}_q_{q}"
-                            constr_linear_expr.append([self.var_z_t_drone_p_q(t,drone,p,q),1])
-                            constr_linear_expr.append([self.var_z_t_p(t,q),-1])
-                            constr_linear_expr.append([self.var_z_t_p(t-1,p),-1])
-                            self.define_constraint(constr_name,constr_linear_expr,self.GREATER_EQUAL,-1) # z^t_{upq} - z^t_q - z^{t-1}_p >= -1
 
+    def get_objective_function(self) -> list:
+        """ Returns the linear expression of the objective function. 
+
+        Returns:
+            list: The linear expression of the objective function. This is a list of tuples with the form (variable_name (str), coefficient (float)).
+        """
+        objective_function_vars = []
+        objective_function_coefficients = []
+        for t in range(self.observation_period):
+            for p in self.input_graph.deployment_positions + [self.input_graph.base_station]:
+                for q in self.input_graph.deployment_positions + [self.input_graph.base_station]:
+                    hover = False if (p == self.input_graph.base_station or q == self.input_graph.base_station) else True
+                    energy_consumed = energy(self.input_graph.get_distance(p,q), self.time_step_delta, hover)
+
+                    distance_cost = (1 - self.alpha) * self.input_graph.get_distance(p,q)
+                    energy_cost = self.alpha * self.beta * energy_consumed
+
+                    objective_function_vars.append(self.var_f_t_p_q(t,p,q))
+                    objective_function_coefficients.append(distance_cost + energy_cost)
+
+        return [objective_function_vars, objective_function_coefficients]
+    
     def set_variables_to_cplex(self):
         """Adds the variables to the cplex model."""
         self.cplex_model.variables.add(names = self.variables_names, lb = self.variables_lower_bounds, ub = self.variables_upper_bounds, types = self.variables_types)
