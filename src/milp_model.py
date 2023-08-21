@@ -147,6 +147,34 @@ class MILPModel:
         self.constraints_sense.append(constr_sense)
         self.constraints_right_hand_side.append(constr_rhs)
 
+    def define_flow_constraints(self):
+        """Defines the flow constraints for all time steps."""
+        for t in range(self.observation_period):
+            for p in self.input_graph.deployment_positions:
+                constr_linear_expr = []
+                constr_name = "flow_conservation_t_"+str(t)+"_p_"+str(p)
+
+                if p in self.input_graph.get_positions_in_comm_range(self.input_graph.base_station):
+                    constr_linear_expr.append([self.var_f_t_p_q(t,self.input_graph.base_station,p), -1]) # (-) Flow that enters p from base station
+                for q in self.input_graph.get_positions_in_comm_range(p):
+                    constr_linear_expr.append([self.var_f_t_p_q(t,p,q),1])  # (+) Flow that leaves p to q
+                    constr_linear_expr.append([self.var_f_t_p_q(t,q,p),-1]) # (-) Flow that enters p from q
+
+                for sensor in self.input_graph.get_position_coverage(p,self.targets_trace.get_targets_positions_at_time(t)):
+                    constr_linear_expr.append([self.var_f_t_p_q(t,p,sensor),1]) # (+) Flow that leaves p to sensor
+
+                # For any position p, the flow that enters p must be equal to the flow that leaves p at any time step
+                self.define_constraint(constr_name,constr_linear_expr,self.EQUAL,0) 
+
+            for sensor in self.targets_trace.get_targets_positions_at_time(t):
+                constr_linear_expr = []
+                constr_name = "flow_conservation_t_"+str(t)+"_sensor_"+str(sensor)
+                for p in self.input_graph.get_target_coverage(sensor):
+                    constr_linear_expr.append([self.var_f_t_p_q(t,p,sensor),1]) # (+) Flow that leaves p to sensor
+                
+                # At any time step, a sensor must receive at least one flow
+                self.define_constraint(constr_name,constr_linear_expr,self.GREATER_EQUAL,1)
+    
     def set_variables_to_cplex(self):
         """Adds the variables to the cplex model."""
         self.cplex_model.variables.add(names = self.variables_names, lb = self.variables_lower_bounds, ub = self.variables_upper_bounds, types = self.variables_types)
