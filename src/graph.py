@@ -41,6 +41,18 @@ class Graph:
         """
         return [position for position in self.deployment_positions if np.linalg.norm(np.array((position[0],position[1])) - np.array(target_position)) <= self.coverage_tan_angle*position[2]]
     
+    def get_position_coverage(self, position:tuple, targets: list) -> list:
+        """Returns the set of targets covered by the position.
+
+        Args:
+            position: Coordinates of the position
+            targets: List of target positions (tuples (x,y)) at a given time step
+
+        Returns:
+            List of targets covered by the position
+        """
+        return [target for target in targets if np.linalg.norm(np.array((position[0],position[1])) - np.array(target)) <= self.coverage_tan_angle*position[2]]
+    
     def get_positions_in_comm_range(self, position: tuple) -> list:
         """Returns the set of positions that are in communication range with the given position.
 
