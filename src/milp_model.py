@@ -101,7 +101,7 @@ class MILPModel:
         return "f_t_"+str(time_step)+"_p_"+str(position_p)+"_q_"+str(position_q)
 
     def define_all_variables(self):
-        """Defines all the variables of the linear program."""
+        """Defines all the variables of the linear program. Uses the function define_variable to save the information of the variables in the corresponding lists. Later the variables must be added to the cplex model."""
         # Defining the variables z_t_p for all t \in T and p \in P \cup {base_station}
         for t in range(self.observation_period):
             self.define_variable(self.var_z_t_p(t,self.input_graph.base_station),0,self.n_available_drones,self.INTEGER_VARIABLE)
@@ -118,13 +118,20 @@ class MILPModel:
         # Defining the flow variables f_t_base_p for all t \in T and p \in P
         for t in range(self.observation_period):
             for p in self.input_graph.get_positions_in_comm_range(self.input_graph.base_station):
-                self.define_variable(self.var_f_t_p_q(t,self.input_graph.base_station,p),0,len(self.input_graph.targets_trace),self.CONTINUOUS_VARIABLE)
+                self.define_variable(self.var_f_t_p_q(t,self.input_graph.base_station,p),0,len(self.targets_trace.trace_set),self.CONTINUOUS_VARIABLE)
 
         # Defining the flow variables f_t_p_q for all t \in T, p,q \in P and p \neq q
         for t in range(self.observation_period):
             for p in self.input_graph.deployment_positions:
                 for q in self.input_graph.get_positions_in_comm_range(p):
-                    self.define_variable(self.var_f_t_p_q(t,p,q),0,len(self.input_graph.targets_trace),self.CONTINUOUS_VARIABLE)
+                    self.define_variable(self.var_f_t_p_q(t,p,q),0,len(self.targets_trace.trace_set),self.CONTINUOUS_VARIABLE)
+
+        # Defining the flow variables f_t_p_q for all t \in T, sensor_position \in trace_set and delpoyment_position \in P that covers the sensor_position
+        for t in range(self.observation_period):
+                for sensor_trace in self.targets_trace.trace_set:
+                    for sensor_position in sensor_trace:
+                        for deployment_position in self.input_graph.get_target_coverage(sensor_position):
+                            self.define_variable(self.var_f_t_p_q(t,sensor_position,deployment_position),0,len(self.targets_trace.trace_set),self.CONTINUOUS_VARIABLE)
 
     def define_constraint(self, constr_name: str, constr_linear_expr: list, constr_sense:int , constr_rhs:float):
         """Defines a constraint and saves its information in the corresponding lists. This function does not add the constraints to the cplex model. I'm using these lists is because addign variables and constraints in batches is faster than adding them one by one for some reason.
