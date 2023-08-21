@@ -1,6 +1,7 @@
 from typing import Optional
 from graph import Graph
 from targets_trace import Trace
+from energy_model import energy
 try:
     import cplex
 except ImportError:
