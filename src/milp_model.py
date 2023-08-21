@@ -147,10 +147,10 @@ class MILPModel:
 
         # Defining the flow variables f_t_p_q for all t \in T, sensor_position \in trace_set and delpoyment_position \in P that covers the sensor_position
         for t in range(self.observation_period):
-                for sensor_trace in self.targets_trace.trace_set:
-                    for sensor_position in sensor_trace:
-                        for deployment_position in self.input_graph.get_target_coverage(sensor_position):
-                            self.define_variable(self.var_f_t_p_q(t,sensor_position,deployment_position),0,len(self.targets_trace.trace_set),self.CONTINUOUS_VARIABLE)
+            for sensor_trace in self.targets_trace.trace_set:
+                for sensor_position in sensor_trace:
+                    for deployment_position in self.input_graph.get_target_coverage(sensor_position):
+                        self.define_variable(self.var_f_t_p_q(t,sensor_position,deployment_position),0,len(self.targets_trace.trace_set),self.CONTINUOUS_VARIABLE)
 
         # Defining the variables z_t_drone_p_q for all t \in T, drone \in n_available_drones, p,q \in P and p \neq q
         if self.observation_period > 1: # Otherwise there are no drone movements within the observation period
