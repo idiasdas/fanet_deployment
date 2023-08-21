@@ -175,6 +175,32 @@ class MILPModel:
                 # At any time step, a sensor must receive at least one flow
                 self.define_constraint(constr_name,constr_linear_expr,self.GREATER_EQUAL,1)
     
+    def define_drone_flow_constraints(self):
+        """This constraint ensures a flow only exists if a drone is deployed at the source position."""
+        for t in range(self.observation_period):
+            for p in self.input_graph.deployment_positions:
+                if p in self.input_graph.get_positions_in_comm_range(self.input_graph.base_station):
+                    constr_linear_expr = []
+                    constr_name = "drone_flow_constr_"+str(t)+"_p_"+str(p)
+                    constr_linear_expr.append([self.var_f_t_p_q(t,self.input_graph.base_station,p), 1]) # (+) Flow that enters p from base station
+                    constr_linear_expr.append([self.var_z_t_p(t,p), -1*len(self.targets_trace.trace_set)]) # (-) Number of sensors * z^t_p
+
+                    self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0) # Has to be less or equal to 0
+
+                for q in self.input_graph.get_positions_in_comm_range(p):
+                    constr_linear_expr = []
+                    constr_name = "drone_flow_constr_"+str(t)+"_p_"+str(p)+"_q_"+str(q)
+                    constr_linear_expr.append([self.var_f_t_p_q(t,p,q), 1])
+                    constr_linear_expr.append([self.var_z_t_p(t,p), -1*len(self.targets_trace.trace_set)])
+                    self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0)
+
+                for sensor in self.input_graph.get_position_coverage(p,self.targets_trace.get_targets_positions_at_time(t)):
+                    constr_linear_expr = []
+                    constr_name = "drone_flow_constr_"+str(t)+"_p_"+str(p)+"_sensor_"+str(sensor)
+                    constr_linear_expr.append([self.var_f_t_p_q(t,p,sensor), 1])
+                    constr_linear_expr.append([self.var_z_t_p(t,p), -1*len(self.targets_trace.trace_set)])
+                    self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0)
+
     def set_variables_to_cplex(self):
         """Adds the variables to the cplex model."""
         self.cplex_model.variables.add(names = self.variables_names, lb = self.variables_lower_bounds, ub = self.variables_upper_bounds, types = self.variables_types)
