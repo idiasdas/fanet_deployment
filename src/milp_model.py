@@ -213,6 +213,17 @@ class MILPModel:
                 constr_linear_expr.append([self.var_z_t_drone_p(t,drone,self.input_graph.base_station),1])
                 self.define_constraint(constr_name,constr_linear_expr,self.EQUAL,1)
 
+    def define_position_use_constraints(self):
+        """Defines the constraints to ensure that if a drone is place in p at time t then z^t_p = 1."""
+        for t in range(self.observation_period):
+            for p in self.input_graph.deployment_positions:
+                constr_linear_expr = []
+                constr_name = "position_use_constr_t_"+str(t)+"_p_"+str(p)
+                for drone in range(self.n_available_drones):
+                    constr_linear_expr.append([self.var_z_t_drone_p(t,drone,p),1])
+                constr_linear_expr.append([self.var_z_t_p(t,p),-1])
+                self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0)
+
     def set_variables_to_cplex(self):
         """Adds the variables to the cplex model."""
         self.cplex_model.variables.add(names = self.variables_names, lb = self.variables_lower_bounds, ub = self.variables_upper_bounds, types = self.variables_types)
