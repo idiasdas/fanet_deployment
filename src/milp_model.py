@@ -168,7 +168,7 @@ class MILPModel:
 
         Args:
             constr_name: Name of the constraint.
-            constr_linear_expr: Linear expression of the constraint. A list of tuples with the form (variable_name (str), coefficient (float)).
+            constr_linear_expr: Linear expression of the constraint. A list with two lists: [[variable_names],[coefficients]].
             constr_sense: Sense of the constraint. Use the constants GREATER_EQUAL, EQUAL or LESS_EQUAL defined in this class.
             constr_rhs: Right hand side of the constraint.
         """            
@@ -181,77 +181,115 @@ class MILPModel:
         """Defines the flow constraints for all time steps."""
         for t in range(self.observation_period):
             for p in self.input_graph.deployment_positions:
-                constr_linear_expr = []
+                linear_expr_var = []
+                linear_expr_coeff = []
                 constr_name = f"flow_conservation_t_{t}_p_{p}"
 
                 if p in self.input_graph.get_positions_in_comm_range(self.input_graph.base_station):
-                    constr_linear_expr.append([self.var_f_t_p_q(t,self.input_graph.base_station,p), -1]) # (-) Flow that enters p from base station
+                    # (-) Flow that enters p from base station
+                    linear_expr_var.append(self.var_f_t_p_q(t,self.input_graph.base_station,p))
+                    linear_expr_coeff.append(-1)
                 for q in self.input_graph.get_positions_in_comm_range(p):
-                    constr_linear_expr.append([self.var_f_t_p_q(t,p,q),1])  # (+) Flow that leaves p to q
-                    constr_linear_expr.append([self.var_f_t_p_q(t,q,p),-1]) # (-) Flow that enters p from q
+                    # (+) Flow that leaves p to q
+                    linear_expr_var.append(self.var_f_t_p_q(t,p,q))
+                    linear_expr_coeff.append(1)
+                    # (-) Flow that enters p from q
+                    linear_expr_var.append(self.var_f_t_p_q(t,q,p))
+                    linear_expr_coeff.append(-1)
 
                 for sensor in self.input_graph.get_position_coverage(p,self.targets_trace.get_targets_positions_at_time(t)):
-                    constr_linear_expr.append([self.var_f_t_p_q(t,p,sensor),1]) # (+) Flow that leaves p to sensor
+                    # (+) Flow that leaves p to sensor
+                    linear_expr_var.append(self.var_f_t_p_q(t,p,sensor))
+                    linear_expr_coeff.append(1)
 
                 # For any position p, the flow that enters p must be equal to the flow that leaves p at any time step
-                self.define_constraint(constr_name,constr_linear_expr,self.EQUAL,0) 
+                self.define_constraint(constr_name,[[linear_expr_var],[linear_expr_coeff]],self.EQUAL,0) 
 
             for sensor in self.targets_trace.get_targets_positions_at_time(t):
-                constr_linear_expr = []
+                linear_expr_var = []
+                linear_expr_coeff = []
                 constr_name = f"flow_conservation_t_{t}_sensor_{sensor}"
                 for p in self.input_graph.get_target_coverage(sensor):
-                    constr_linear_expr.append([self.var_f_t_p_q(t,p,sensor),1]) # (+) Flow that leaves p to sensor
+                    # (+) Flow that leaves p to sensor
+                    linear_expr_var.append(self.var_f_t_p_q(t,p,sensor))
+                    linear_expr_coeff.append(1)
                 
                 # At any time step, a sensor must receive at least one flow
-                self.define_constraint(constr_name,constr_linear_expr,self.GREATER_EQUAL,1)
+                self.define_constraint(constr_name,[[linear_expr_var],[linear_expr_coeff]],self.GREATER_EQUAL,1)
     
     def define_drone_flow_constraints(self):
         """This constraint ensures a flow only exists if a drone is deployed at the source position."""
         for t in range(self.observation_period):
             for p in self.input_graph.deployment_positions:
                 if p in self.input_graph.get_positions_in_comm_range(self.input_graph.base_station):
-                    constr_linear_expr = []
+                    # f^t_{bp} - |S|z^t_p <= 0
+                    linear_expr_var = []
+                    linear_expr_coeff = []
                     constr_name = f"drone_flow_constr_{t}_p_{p}"
-                    constr_linear_expr.append([self.var_f_t_p_q(t,self.input_graph.base_station,p), 1]) # (+) Flow that enters p from base station
-                    constr_linear_expr.append([self.var_z_t_p(t,p), -1*len(self.targets_trace.trace_set)]) # (-) Number of sensors * z^t_p
-                    self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0) # Has to be less or equal to 0
+                    # (+) Flow that enters p from base station
+                    linear_expr_var.append(self.var_f_t_p_q(t,self.input_graph.base_station,p))
+                    linear_expr_coeff.append(1)
+                    # (-) Number of sensors * z^t_p
+                    linear_expr_var.append(self.var_z_t_p(t,p))
+                    linear_expr_coeff.append(-1*len(self.targets_trace.trace_set))
+                    # Has to be less or equal to 0
+                    self.define_constraint(constr_name,[[linear_expr_var],[linear_expr_coeff]],self.LESS_EQUAL,0) 
 
                 for q in self.input_graph.get_positions_in_comm_range(p):
-                    constr_linear_expr = []
+                    # f^t_{pq} - |S|z^t_p <= 0
+                    linear_expr_var = []
+                    linear_expr_coeff = []
                     constr_name = f"drone_flow_constr_{t}_p_{p}_q_{q}"
-                    constr_linear_expr.append([self.var_f_t_p_q(t,p,q), 1])
-                    constr_linear_expr.append([self.var_z_t_p(t,p), -1*len(self.targets_trace.trace_set)])
-                    self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0)
+                    # (+) Flow that leaves p to q
+                    linear_expr_var.append(self.var_f_t_p_q(t,p,q))
+                    linear_expr_coeff.append(1)
+                    # (-) Number of sensors * z^t_p
+                    linear_expr_var.append(self.var_z_t_p(t,p))
+                    linear_expr_coeff.append(-1*len(self.targets_trace.trace_set))
+                    # Has to be less or equal to 0
+                    self.define_constraint(constr_name,[[linear_expr_var],[linear_expr_coeff]],self.LESS_EQUAL,0)
 
                 for sensor in self.input_graph.get_position_coverage(p,self.targets_trace.get_targets_positions_at_time(t)):
-                    constr_linear_expr = []
+                    linear_expr_var = []
+                    linear_expr_coeff = []
                     constr_name = f"drone_flow_constr_{t}_p_{p}_sensor_{sensor}"
-                    constr_linear_expr.append([self.var_f_t_p_q(t,p,sensor), 1])
-                    constr_linear_expr.append([self.var_z_t_p(t,p), -1*len(self.targets_trace.trace_set)])
-                    self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0)
+                    # (+) Flow that leaves p to sensor
+                    linear_expr_var.append(self.var_f_t_p_q(t,p,sensor))
+                    linear_expr_coeff.append(1)
+                    # (-) Number of sensors * z^t_p
+                    linear_expr_var.append(self.var_z_t_p(t,p))
+                    linear_expr_coeff.append(-1*len(self.targets_trace.trace_set))
+                    # Has to be less or equal to 0
+                    self.define_constraint(constr_name,[[linear_expr_var],[linear_expr_coeff]],self.LESS_EQUAL,0)
 
     def define_drone_integrity_constraints(self):
         """Defines the constraints to ensure a drone is always placed somewhere in P \cup {base_station} at any time step and that a drone can only be in one position at a time."""
 
         for t in range(self.observation_period):
             for drone in range(self.n_available_drones):
-                constr_linear_expr = []
+                linear_expr_var = []
+                linear_expr_coeff = []
                 constr_name = f"drone_position_constr_t_{t}_drone_{drone}"
                 for p in self.input_graph.deployment_positions:
-                    constr_linear_expr.append([self.var_z_t_drone_p(t,drone,p),1])
-                constr_linear_expr.append([self.var_z_t_drone_p(t,drone,self.input_graph.base_station),1])
-                self.define_constraint(constr_name,constr_linear_expr,self.EQUAL,1)
+                    linear_expr_var.append(self.var_z_t_drone_p(t,drone,p))
+                    linear_expr_coeff.append(1)
+                linear_expr_var.append(self.var_z_t_drone_p(t,drone,self.input_graph.base_station))
+                linear_expr_coeff.append(1)
+                self.define_constraint(constr_name,[linear_expr_var,linear_expr_coeff],self.EQUAL,1)
 
     def define_position_use_constraints(self):
         """Defines the constraints to ensure that if a drone is place in p at time t then z^t_p = 1."""
         for t in range(self.observation_period):
             for p in self.input_graph.deployment_positions:
-                constr_linear_expr = []
+                linear_expr_var = []
+                linear_expr_coeff = []
                 constr_name = f"position_use_constr_t_{t}_p_{p}"
                 for drone in range(self.n_available_drones):
-                    constr_linear_expr.append([self.var_z_t_drone_p(t,drone,p),1])
-                constr_linear_expr.append([self.var_z_t_p(t,p),-1])
-                self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0)
+                    linear_expr_var.append(self.var_z_t_drone_p(t,drone,p))
+                    linear_expr_coeff.append(1)
+                linear_expr_var.append(self.var_z_t_p(t,p))
+                linear_expr_coeff.append(-1)
+                self.define_constraint(constr_name,[linear_expr_var, linear_expr_coeff],self.LESS_EQUAL,0)
 
     def define_drone_movement_constraints(self):
         """Defines the constraints that ensure the definition of the variables z^t_{upq}."""
@@ -260,20 +298,38 @@ class MILPModel:
                 for drone in range(self.n_available_drones):
                     for p in self.input_graph.deployment_positions:
                         for q in self.input_graph.get_positions_in_comm_range(p):
-                            constr_linear_expr = []
+                            # z^t_{upq} - z^{t-1} <= 0
+                            linear_expr_var = []
+                            linear_expr_coeff = []
                             constr_name = f"drone_mov_constr1_t_{t}_drone_{drone}_p_{p}_q_{q}"
-                            constr_linear_expr.append([self.var_z_t_drone_p_q(t,drone,p,q),1])
-                            constr_linear_expr.append([self.var_z_t_drone_p(t-1,drone,p),-1])
-                            self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0) # z^t_{upq} - z^{t-1} <= 0
+                            linear_expr_var.append(self.var_z_t_drone_p_q(t,drone,p,q))
+                            linear_expr_coeff.append(1)
+                            linear_expr_var.append(self.var_z_t_drone_p(t-1,drone,p))
+                            linear_expr_coeff.append(-1)
+                            self.define_constraint(constr_name,[linear_expr_var, linear_expr_coeff],self.LESS_EQUAL,0)
 
-                            constr_linear_expr = []
+                            # z^t_{upq} - z^t_q <= 0
+                            linear_expr_var = []
+                            linear_expr_coeff = []  
                             constr_name = f"drone_mov_constr1_t_{t}_drone_{drone}_p_{p}_q_{q}"
-                            constr_linear_expr.append([self.var_z_t_drone_p_q(t,drone,p,q),1])
-                            constr_linear_expr.append([self.var_z_t_drone_p(t,drone,q),-1])
-                            self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0) # z^t_{upq} - z^t_q <= 0
+                            linear_expr_var.append(self.var_z_t_drone_p_q(t,drone,p,q))
+                            linear_expr_coeff.append(1)
+                            linear_expr_var.append(self.var_z_t_drone_p(t,drone,q))
+                            linear_expr_coeff.append(-1)
+                            self.define_constraint(constr_name,[linear_expr_var, linear_expr_coeff],self.LESS_EQUAL,0)
                             
-                            constr_linear_expr = []
+                            # z^t_{upq} - z^t_q - z^{t-1}_p >= -1
+                            linear_expr_var = []
+                            linear_expr_coeff = []
                             constr_name = f"drone_mov_constr1_t_{t}_drone_{drone}_p_{p}_q_{q}"
+                            linear_expr_var.append(self.var_z_t_drone_p_q(t,drone,p,q))
+                            linear_expr_coeff.append(1)
+                            linear_expr_var.append(self.var_z_t_p(t,q))
+                            linear_expr_coeff.append(-1)
+                            linear_expr_var.append(self.var_z_t_p(t-1,p))
+                            linear_expr_coeff.append(-1)
+                            self.define_constraint(constr_name,[linear_expr_var, linear_expr_coeff],self.GREATER_EQUAL,-1) 
+    
 
     def get_objective_function(self) -> list:
         """ Returns the linear expression of the objective function. 
