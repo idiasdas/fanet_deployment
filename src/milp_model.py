@@ -85,7 +85,7 @@ class MILPModel:
         Returns:
             The name of the variable z_t_drone_p.
         """
-        return "z_t_"+str(time_step)+"_drone_"+str(drone)+"_p_"+str(position)
+        return f"z_t_{time_step}_drone_{drone}_p_{position}"
 
     def var_f_t_p_q(self, time_step: int, position_p: tuple, position_q: tuple) -> str:
         """Returns the name of the variable f_t_p_q. This is a continuous variable for p,q \in P and t \in T that says how much flow is sent from position p to position q at time step t. This corresnponds to the variable f^t_{pq} in the papers.
@@ -98,6 +98,7 @@ class MILPModel:
         Returns:
             The name of the variable f_t_p_q.
         """
+        return f"z_t_{time_step}_p_{position_p}_q_{position_q}"
 
     def var_z_t_drone_p_q(self, time_step: int, drone:int, position_p: tuple, position_q: tuple) -> str:
         """Returns the name of the variable z_t_drone_p_q. This is a binary variable for p,q \in P and t \in T and drone \in n_available_drones that says if drone is deployed at position p at time step t and moves to position q at time step t+1. This corresnponds to the variable z^t_{upq} in the papers.
@@ -156,12 +157,14 @@ class MILPModel:
 
 
     def define_constraint(self, constr_name: str, constr_linear_expr: list, constr_sense:int , constr_rhs:float):
-        """Defines a constraint and saves its information in the corresponding lists. This function does not add the constraints to the cplex model. I'm using these lists is because addign variables and constraints in batches is faster than adding them one by one for some reason.
+        """Defines a constraint and saves its information in the corresponding lists. 
+
+        This function does not add the constraints to the CPLEX model. Using these lists for batch additions is faster than adding constraints individually.
 
         Args:
             constr_name: Name of the constraint.
-            constr_linear_expr: Linear expression of the constraint.
-            constr_sense: Sense of the constraint. Use cplex_model.objective.sense.minimize or cplex_model.objective.sense.maximize.
+            constr_linear_expr: Linear expression of the constraint. A list of tuples with the form (variable_name (str), coefficient (float)).
+            constr_sense: Sense of the constraint. Use the constants GREATER_EQUAL, EQUAL or LESS_EQUAL defined in this class.
             constr_rhs: Right hand side of the constraint.
         """            
         self.constraints_names.append(constr_name)
@@ -174,7 +177,7 @@ class MILPModel:
         for t in range(self.observation_period):
             for p in self.input_graph.deployment_positions:
                 constr_linear_expr = []
-                constr_name = "flow_conservation_t_"+str(t)+"_p_"+str(p)
+                constr_name = f"flow_conservation_t_{t}_p_{p}"
 
                 if p in self.input_graph.get_positions_in_comm_range(self.input_graph.base_station):
                     constr_linear_expr.append([self.var_f_t_p_q(t,self.input_graph.base_station,p), -1]) # (-) Flow that enters p from base station
@@ -190,7 +193,7 @@ class MILPModel:
 
             for sensor in self.targets_trace.get_targets_positions_at_time(t):
                 constr_linear_expr = []
-                constr_name = "flow_conservation_t_"+str(t)+"_sensor_"+str(sensor)
+                constr_name = f"flow_conservation_t_{t}_sensor_{sensor}"
                 for p in self.input_graph.get_target_coverage(sensor):
                     constr_linear_expr.append([self.var_f_t_p_q(t,p,sensor),1]) # (+) Flow that leaves p to sensor
                 
@@ -203,22 +206,21 @@ class MILPModel:
             for p in self.input_graph.deployment_positions:
                 if p in self.input_graph.get_positions_in_comm_range(self.input_graph.base_station):
                     constr_linear_expr = []
-                    constr_name = "drone_flow_constr_"+str(t)+"_p_"+str(p)
+                    constr_name = f"drone_flow_constr_{t}_p_{p}"
                     constr_linear_expr.append([self.var_f_t_p_q(t,self.input_graph.base_station,p), 1]) # (+) Flow that enters p from base station
                     constr_linear_expr.append([self.var_z_t_p(t,p), -1*len(self.targets_trace.trace_set)]) # (-) Number of sensors * z^t_p
-
                     self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0) # Has to be less or equal to 0
 
                 for q in self.input_graph.get_positions_in_comm_range(p):
                     constr_linear_expr = []
-                    constr_name = "drone_flow_constr_"+str(t)+"_p_"+str(p)+"_q_"+str(q)
+                    constr_name = f"drone_flow_constr_{t}_p_{p}_q_{q}"
                     constr_linear_expr.append([self.var_f_t_p_q(t,p,q), 1])
                     constr_linear_expr.append([self.var_z_t_p(t,p), -1*len(self.targets_trace.trace_set)])
                     self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0)
 
                 for sensor in self.input_graph.get_position_coverage(p,self.targets_trace.get_targets_positions_at_time(t)):
                     constr_linear_expr = []
-                    constr_name = "drone_flow_constr_"+str(t)+"_p_"+str(p)+"_sensor_"+str(sensor)
+                    constr_name = f"drone_flow_constr_{t}_p_{p}_sensor_{sensor}"
                     constr_linear_expr.append([self.var_f_t_p_q(t,p,sensor), 1])
                     constr_linear_expr.append([self.var_z_t_p(t,p), -1*len(self.targets_trace.trace_set)])
                     self.define_constraint(constr_name,constr_linear_expr,self.LESS_EQUAL,0)
@@ -229,7 +231,7 @@ class MILPModel:
         for t in range(self.observation_period):
             for drone in range(self.n_available_drones):
                 constr_linear_expr = []
-                constr_name = "drone_position_constr_t_"+str(t)+"_drone_"+str(drone)
+                constr_name = f"drone_position_constr_t_{t}_drone_{drone}"
                 for p in self.input_graph.deployment_positions:
                     constr_linear_expr.append([self.var_z_t_drone_p(t,drone,p),1])
                 constr_linear_expr.append([self.var_z_t_drone_p(t,drone,self.input_graph.base_station),1])
@@ -240,7 +242,7 @@ class MILPModel:
         for t in range(self.observation_period):
             for p in self.input_graph.deployment_positions:
                 constr_linear_expr = []
-                constr_name = "position_use_constr_t_"+str(t)+"_p_"+str(p)
+                constr_name = f"position_use_constr_t_{t}_p_{p}"
                 for drone in range(self.n_available_drones):
                     constr_linear_expr.append([self.var_z_t_drone_p(t,drone,p),1])
                 constr_linear_expr.append([self.var_z_t_p(t,p),-1])
