@@ -98,21 +98,8 @@ class MILPModel:
         Returns:
             The name of the variable f_t_p_q.
         """
+        return "f_t_"+str(time_step)+"_p_"+str(position_p)+"_q_"+str(position_q)
 
-    def var_z_t_drone_p_q(self, time_step: int, drone:int, position_p: tuple, position_q: tuple) -> str:
-        """Returns the name of the variable z_t_drone_p_q. This is a binary variable for p,q \in P and t \in T and drone \in n_available_drones that says if drone is deployed at position p at time step t and moves to position q at time step t+1. This corresnponds to the variable z^t_{upq} in the papers.
-
-        Args:
-            time_step (int): The given time step
-            drone (int): The drone id
-            position_p (tuple): The coordinates of position p at time step t
-            position_q (tuple): The coordinates of position q at time step t+1
-
-        Returns:
-            str: The name of the variable z_t_drone_p_q.
-        """
-        return f"z_t_{time_step}_drone_{drone}_p_{position_p}_q_{position_q}"
-    
     def define_all_variables(self):
         """Defines all the variables of the linear program. Uses the function define_variable to save the information of the variables in the corresponding lists. Later the variables must be added to the cplex model."""
         # Defining the variables z_t_p for all t \in T and p \in P \cup {base_station}
@@ -145,6 +132,15 @@ class MILPModel:
                     for sensor_position in sensor_trace:
                         for deployment_position in self.input_graph.get_target_coverage(sensor_position):
                             self.define_variable(self.var_f_t_p_q(t,sensor_position,deployment_position),0,len(self.targets_trace.trace_set),self.CONTINUOUS_VARIABLE)
+
+        # Defining the variables z_t_drone_p_q for all t \in T, drone \in n_available_drones, p,q \in P and p \neq q
+        if self.observation_period > 1: # Otherwise there are no drone movements within the observation period
+            for t in range(self.observation_period):
+                for drone in range(self.n_available_drones):
+                    for p in self.input_graph.deployment_positions:
+                        for q in self.input_graph.get_positions_in_comm_range(p):
+                            self.define_variable(self.var_z_t_drone_p_q(t,drone,p,q),0,1,self.BINARY_VARIABLE)
+
 
     def define_constraint(self, constr_name: str, constr_linear_expr: list, constr_sense:int , constr_rhs:float):
         """Defines a constraint and saves its information in the corresponding lists. This function does not add the constraints to the cplex model. I'm using these lists is because addign variables and constraints in batches is faster than adding them one by one for some reason.
