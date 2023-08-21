@@ -83,3 +83,15 @@ class Graph:
                     return False
         
         return True
+    
+    def get_distance(self, position1: tuple, position2: tuple) -> float:
+        """Returns the distance between two positions.
+
+        Args:
+            position1: Coordinates of the first position
+            position2: Coordinates of the second position
+
+        Returns:
+            Distance between the two positions
+        """
+        return np.linalg.norm(np.array(position1) - np.array(position2))
