@@ -28,7 +28,7 @@ class Graph:
 
     def set_position_grid(self):
         """ Sets the set P as all the positions in the grid inside the area A."""
-        self.deployment_positions = np.array([(x, y, z) for x in np.arange(0, self.size_A, self.size_A/(self.n_positions_per_axis + 1)) for y in np.arange(0, self.size_A, self.size_A/(self.n_positions_per_axis + 1)) for z in self.heights if x!= 0 and y != 0])
+        self.deployment_positions = [(x, y, z) for x in np.arange(0, self.size_A, self.size_A/(self.n_positions_per_axis + 1)) for y in np.arange(0, self.size_A, self.size_A/(self.n_positions_per_axis + 1)) for z in self.heights if x!= 0 and y != 0]
 
     def get_target_coverage(self, target_position: tuple) -> list:
         """Returns the set of positions that cover the target position.
