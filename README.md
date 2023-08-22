@@ -53,6 +53,12 @@ Ensure that CPLEX is properly installed and accessible in the virtual environmen
 make check-cplex
 ```
 
+## Tests
+This project uses `unittest` to verify code integrity. If you wish to run these tests, use:
+```bash
+make test
+```
+
 ## Create the sensors traces
 
 You will need to create the targets traces (sequence of sensors positions) that are the input to the models. To do so, run the following command:
