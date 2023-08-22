@@ -8,7 +8,7 @@ from targets_trace import Trace
 from graph import Graph
 from milp_model import MILPModel
 
-class TestMilpModel(unittest.TestCase):
+class Test_milp_model(unittest.TestCase):
     """This class tests the MILPModel class. To execute the tests, run the following command:
         python -m unittest test_milp.py 
     """
