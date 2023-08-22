@@ -6,7 +6,7 @@ This project is a remake of the works presented on:
 
 * I. Dias Da Silva and C. Caillouet, "Optimizing the trajectory of drones: trade-off between distance and energy", in 2nd International Workshop on Internet of Autonomous Unmanned Vehicles (IAUV) in conjunction with IEEE SECON 2020, Como, Italy, Jun. 2020.  [(IEEE-9149781)](https://ieeexplore.ieee.org/abstract/document/9149781)
 
----
+Below you will find the instructions to replicate our experiments. If you run into any problems or have any questions about this projet (papers, code or whatever), do not exitate to contact me directly on [igor.dias-da-silva@inria.fr](mailto:igor.dias-da-silva.inria.fr).
 
 ## Requirements
 
@@ -35,6 +35,17 @@ Run the following command to create a conda environment named `fanet` with the r
 ```bash
 make setup-conda
 ```
+Whenever you are working on this project, ensure that you are using one these two virtual environments. Use the following command to activate `venv fanet`:
+
+```bash
+. fanet/bin/activate
+```
+
+The followig command activates the conda environment `fanet`:
+
+```bash
+conda activate fanet
+```
 
  **Verify CPLEX Installation**:
 Ensure that CPLEX is properly installed and accessible in the virtual environment:
@@ -55,4 +66,4 @@ This command verifies if the traces already exist and if they don't, creates the
 ```bash
 make clean-traces
 ```
-
+Now that you are in an activate `fanet` virtual environment and `make check-cplex` has validated the accessiblity to the cplex model, you can execute any code in this project. The following section explains how to replicate our experiments results.

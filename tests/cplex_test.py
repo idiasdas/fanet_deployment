@@ -30,6 +30,7 @@ import os
 import sys
 sys.path.append(os.path.dirname(__file__) + '/../src/')  # Now can import modules in src
 
+from linear_expression import LinearExpression
 try:
     import cplex
 except ImportError:
@@ -51,19 +52,29 @@ constraints_right_hand_side = []
 constraints_names = []
 
 # -x_1 + 2x_2 <= 7
-constraints_linear_expr.append(cplex.SparsePair(ind = ["x1", "x2"], val = [-1, 2]))
+# constraints_linear_expr.append(cplex.SparsePair(ind = ["x1", "x2"], val = [-1, 2]))
+constr = LinearExpression()
+constr.add_term(-1, "x1")
+constr.add_term(2, "x2")
+constraints_linear_expr.append(constr.get_expression())
 constraints_sense.append("L")
 constraints_right_hand_side.append(7)
 constraints_names.append("constr_1")
 
 # 0.2x_1 x_2 <= 4
-constraints_linear_expr.append(cplex.SparsePair(ind = ["x1", "x2"], val = [0.2, 1]))
+constr.clear_expression()
+constr.add_term(0.2, "x1")
+constr.add_term(1, "x2")
+constraints_linear_expr.append(constr.get_expression())
 constraints_sense.append("L")
 constraints_right_hand_side.append(4)
 constraints_names.append("constr_2")
 
 # 2x_1 + x_2 <= 8
-constraints_linear_expr.append(cplex.SparsePair(ind = ["x1", "x2"], val = [2, 1]))
+constr.clear_expression()
+constr.add_term(2, "x1")
+constr.add_term(1, "x2")
+constraints_linear_expr.append(constr.get_expression())
 constraints_sense.append("L")
 constraints_right_hand_side.append(8)
 constraints_names.append("constr_3")
@@ -83,5 +94,8 @@ if cplex_model.solution.get_status() == 101:
 else:
     print("TEST RESULT = FAILED")
 
+print("Objective value = " + str(cplex_model.solution.get_objective_value()))
+print("x1 = " + str(cplex_model.solution.get_values("x1")))
+print("x2 = " + str(cplex_model.solution.get_values("x2")))
 # FINISHES CPLEX
 cplex_model.end()

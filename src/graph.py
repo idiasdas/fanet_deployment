@@ -28,7 +28,7 @@ class Graph:
 
     def set_position_grid(self):
         """ Sets the set P as all the positions in the grid inside the area A."""
-        self.deployment_positions = np.array([(x, y, z) for x in np.arange(0, self.size_A, self.size_A/(self.n_positions_per_axis + 1)) for y in np.arange(0, self.size_A, self.size_A/(self.n_positions_per_axis + 1)) for z in self.heights if x!= 0 and y != 0])
+        self.deployment_positions = [(x, y, z) for x in np.arange(0, self.size_A, self.size_A/(self.n_positions_per_axis + 1)) for y in np.arange(0, self.size_A, self.size_A/(self.n_positions_per_axis + 1)) for z in self.heights if x!= 0 and y != 0]
 
     def get_target_coverage(self, target_position: tuple) -> list:
         """Returns the set of positions that cover the target position.
@@ -39,19 +39,30 @@ class Graph:
         Returns:
             List of positions in P that cover the target position
         """
-        return [position for position in self.deployment_positions if np.linalg.norm(np.array((position[0],position[1])) - np.array(target_position)) <= self.coverage_tan_angle*position[2]]
+        return [position for position in self.deployment_positions if self.get_distance((position[0],position[1]), target_position) <= self.coverage_tan_angle*position[2]]
+    
+    def get_position_coverage(self, position:tuple, targets: list) -> list:
+        """Returns the set of targets covered by the position.
+
+        Args:
+            position: Coordinates of the position
+            targets: List of target positions (tuples (x,y)) at a given time step
+
+        Returns:
+            List of targets covered by the position
+        """
+        return [target for target in targets if self.get_distance((position[0],position[1]),target) <= self.coverage_tan_angle*position[2]]
     
     def get_positions_in_comm_range(self, position: tuple) -> list:
         """Returns the set of positions that are in communication range with the given position.
 
         Args:
             position: Coordinates of the position
-            communication_range: Maximum distance from a position to the base station
 
         Returns:
             List of positions that are in communication range of the base station
         """
-        return [p for p in self.deployment_positions if np.linalg.norm(np.array(p) - np.array(position)) <= self.communication_range and p != position]
+        return [p for p in self.deployment_positions if self.get_distance(p,position) <= self.communication_range and p != position]
     
     def verify_trace_feasiblity(self, targets_trace) -> bool:
         """Verifies if the trace is feasible, i.e., if all targets are covered by at least one position.
@@ -71,3 +82,15 @@ class Graph:
                     return False
         
         return True
+    
+    def get_distance(self, position1: tuple, position2: tuple) -> float:
+        """Returns the distance between two positions.
+
+        Args:
+            position1: Coordinates of the first position
+            position2: Coordinates of the second position
+
+        Returns:
+            Distance between the two positions
+        """
+        return np.linalg.norm(np.array(position1) - np.array(position2))
