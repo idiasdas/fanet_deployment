@@ -22,3 +22,8 @@ clean-traces:
 .PHONY: check-cplex
 check-cplex:
 	@python -c "import cplex" 2>/dev/null && echo "cplex is installed and accessible." || echo "cplex is not accessible. Please refer to the README for more information."
+
+# Target to run all tests
+.PHONY: test
+test:
+	python -m unittest discover -s tests
