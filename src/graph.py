@@ -58,7 +58,6 @@ class Graph:
 
         Args:
             position: Coordinates of the position
-            communication_range: Maximum distance from a position to the base station
 
         Returns:
             List of positions that are in communication range of the base station
