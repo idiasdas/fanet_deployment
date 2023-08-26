@@ -1,9 +1,5 @@
 from typing import Optional
-try:
-    import numpy as np
-except ImportError:
-    print("Error while importing basic modules. Please refer to the README.md file for instructions on how to install the required modules.")
-    exit(1)
+import numpy as np
 
 def Power(v:float) -> float:
     """Power consumption of a rotary wing drone at speed v."""
@@ -33,9 +29,13 @@ def Power(v:float) -> float:
 def energy(d: float, t: float, hover: Optional[bool] = True) -> float:
     """Returns the minimum energy consumed to travel a distance d in a time t. If hover == False, then the drone lands after arriving at the destination instead of hovering."""
 
+    if t == 0:
+        return 0
     # if distance == 0 than hovers for t seconds
-    if d==0:
+    if d == 0 and hover:
         return Power(0)*t 
+    elif d == 0 and not hover:
+        return 0
     
     v_min = d/t             # minimum speed to travel the distance d in time t
     v_aux = v_min
