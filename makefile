@@ -26,4 +26,4 @@ check-cplex:
 # Target to run all tests
 .PHONY: test
 test:
-	pytest -v --cov-report term-missing --cov=src tests/
+	pytest -v --cov-report term-missing --cov=src tests/ -W ignore::DeprecationWarning
