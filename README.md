@@ -54,7 +54,8 @@ make check-cplex
 ```
 
 ## Tests
-This project uses `PyTest` to verify code integrity. If you wish to run these tests, use:
+This project uses `PyTest` and all tests can be found in `fanet_deployment/tests/`. If you wish to run these tests, use:
+
 ```bash
 make test
 ```
