@@ -45,7 +45,7 @@ def test_basic_0():
     os.remove(out_file)
     assert not os.path.exists(out_file)
     assert milp_model.cplex_model.solution.get_status() == CPXMIP_OPTIMAL
-    assert round(milp_model.cplex_model.solution.get_objective_value(),5) == 142.82857
+    assert round(milp_model.get_objective_value(),5) == 142.82857
     milp_model.cplex_finish()
 
 
@@ -67,7 +67,7 @@ def test_basic_1():
     milp_model.solve_model()
 
     assert milp_model.cplex_model.solution.get_status() == CPXMIP_OPTIMAL
-    assert round(milp_model.cplex_model.solution.get_objective_value(),5) == 142.82857
+    assert round(milp_model.get_objective_value(),5) == 142.82857
     milp_model.cplex_finish()
 
 
@@ -113,7 +113,7 @@ def test_movement_0():
     milp_model.solve_model()
 
     milp_model.cplex_model.solution.get_status() == CPXMIP_OPTIMAL
-    round(milp_model.cplex_model.solution.get_objective_value(),5) == 197.48087
+    round(milp_model.get_objective_value(),5) == 197.48087
     milp_model.cplex_finish()
 
 
@@ -161,7 +161,7 @@ def test_movement_2():
     milp_model.solve_model()
 
     milp_model.cplex_model.solution.get_status() == CPXMIP_OPTIMAL
-    round(milp_model.cplex_model.solution.get_objective_value(),5) == 294.96174
+    round(milp_model.get_objective_value(),5) == 294.96174
     milp_model.cplex_finish()
 
 
@@ -184,7 +184,7 @@ def test_idle_drones_0():
     milp_model.solve_model()
 
     milp_model.cplex_model.solution.get_status() == CPXMIP_OPTIMAL
-    round(milp_model.cplex_model.solution.get_objective_value(),5) == 197.48087
+    round(milp_model.get_objective_value(),5) == 197.48087
 
     deployement = milp_model.get_drones_deployement()
     for t in range(2):
@@ -238,7 +238,7 @@ def test_sensor_coverage_0():
     milp_model.solve_model()
 
     milp_model.cplex_model.solution.get_status() == CPXMIP_OPTIMAL
-    round(milp_model.cplex_model.solution.get_objective_value(),5) == 294.96174
+    round(milp_model.get_objective_value(),5) == 294.96174
     milp_model.cplex_finish()
 
 def test_sensor_coverage_1():
