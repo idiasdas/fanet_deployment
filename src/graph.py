@@ -1,9 +1,4 @@
-try:
-    import numpy as np
-    from typing import Optional
-except ImportError:
-    print("Error while importing basic modules. Please refer to the README.md file for instructions on how to install the required modules.")
-    exit(1)
+import numpy as np
 
 class Graph:
     def __init__(self, size_A: float, heights: float, base_station: tuple,n_positions_per_axis: int, communication_range: float, coverage_tan_angle: float):
