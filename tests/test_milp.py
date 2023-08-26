@@ -17,18 +17,6 @@ def model_shut_up(milp_model):
     milp_model.cplex_model.set_warning_stream(None)
     milp_model.cplex_model.set_results_stream(None)
 
-def print_model(milp_model):
-    print("---------------------------------")
-    for var in milp_model.variables:
-        print(var)
-    print("---------------------------------")
-    for constr in milp_model.constraints:
-        print(constr)
-    print("---------------------------------")
-    print(milp_model.get_objective_function())
-    print("---------------------------------")
-    print(milp_model.targets_trace.trace_set)
-
 def test_basic_0():
     """For this example, we have one sensor in the middle of the area (50,50,0) and only one deployement solution (50,50,10) for a single time step.
     
