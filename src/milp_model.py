@@ -3,12 +3,7 @@ from graph import Graph
 from targets_trace import Trace
 from energy_model import energy
 from linear_expression import LinearExpression
-
-try:
-    import cplex
-except ImportError:
-    print("Error while importing cplex. Please refer to the README.md file for instructions on how to install cplex.")
-    exit(1)
+import cplex
 
 class MILPModel:
     # Constants for variables types
