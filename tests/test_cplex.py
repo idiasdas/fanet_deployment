@@ -9,6 +9,8 @@ try:
 except ImportError:
     print("Error importing required modules. Refer to README.md for more information.")
 
+CPXMIP_OPTIMAL = 101
+
 def test_cplex():
     """This test verify if the cplex module is working properly.
     It creates a small linear program and solves it.
@@ -81,7 +83,7 @@ def test_cplex():
 
     #SOLVE
     cplex_model.solve()
-    assert cplex_model.solution.get_status() == 101
+    assert cplex_model.solution.get_status() == CPXMIP_OPTIMAL
 
     assert round(cplex_model.solution.get_objective_value(),5) == 5.77778
     assert round(cplex_model.solution.get_values("x1"),5) == 2.22222
