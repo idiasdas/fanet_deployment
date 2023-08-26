@@ -377,11 +377,11 @@ class MILPModel:
         """Solves the linear program."""
         self.cplex_model.solve()
 
-    def get_drones_deployement(self) -> dict:
+    def get_drones_deployement(self) -> list:
         """Returns the deployment of drones at each time step.
 
         Returns:
-            list: list of list of tuples. For each time step there is a list of tuples (drone, position) that says where each drone is deployed at that time step. The list is ordered by time step. (drone, position) = (int, tuple)
+            list: List of list of tuples. For each time step, for each drone, the position where the drone is deployed. 
         """
         drones_deployement = []
         for t in range(self.observation_period):
@@ -389,7 +389,7 @@ class MILPModel:
             for drone in range(self.n_available_drones):
                 for p in self.input_graph.deployment_positions + [self.input_graph.base_station]:
                     if self.cplex_model.solution.get_values(self.var_z_t_drone_p(t,drone,p)) == 1:
-                        deployement_at_t.append((drone, p))
+                        deployement_at_t.append(p)
             drones_deployement.append(deployement_at_t)
         return drones_deployement
     
