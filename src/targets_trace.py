@@ -1,12 +1,7 @@
 from typing import Optional
-
-try:
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from matplotlib import collections as mc
-except ImportError:
-    print("Error while importing basic modules. Please refer to the README.md file for instructions on how to install the required modules.")
-    exit(1)
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib import collections as mc
 
 class Trace:
     def __init__(self, n_targets: Optional[int] = 5, observation_period: Optional[int] = 5, target_speed: Optional[float] = 5, area_size: Optional[float] = 100, time_step_delta: Optional[float] = 1, load_file: Optional[str] = ""):
@@ -50,13 +45,13 @@ class Trace:
             new_y = last_y + direction[1] * self.target_speed * self.time_step_delta
             # Bounces off the walls.
             if new_x > self.area_size:
-                new_x = self.area_size - (new_x - self.area_size)
+                new_x = self.area_size - new_x % self.area_size
             if new_x < 0:
-                new_x = abs(new_x)
+                new_x = abs(new_x % self.area_size)
             if new_y > self.area_size:
-                new_y = self.area_size - (new_y - self.area_size)
+                new_y = self.area_size - new_y % self.area_size
             if new_y < 0:
-                new_y = abs(new_y)
+                new_y = abs(new_y % self.area_size)
             target_trace += [(new_x, new_y)]
         return target_trace
 
