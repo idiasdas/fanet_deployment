@@ -26,4 +26,4 @@ check-cplex:
 # Target to run all tests
 .PHONY: test
 test:
-	python -m unittest discover -s tests
+	pytest
