@@ -54,7 +54,7 @@ make check-cplex
 ```
 
 ## Tests
-This project uses `unittest` to verify code integrity. If you wish to run these tests, use:
+This project uses `PyTest` to verify code integrity. If you wish to run these tests, use:
 ```bash
 make test
 ```
