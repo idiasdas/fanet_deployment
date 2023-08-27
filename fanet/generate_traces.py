@@ -5,7 +5,7 @@ import os
 import numpy as np
 from fanet.targets_trace import Trace
 from fanet.graph import Graph
-from fanet.config import FILES_DIR
+from fanet.config import FILES_DIR, PARAMETERS
 
 def create_trace(n_targets, observation_period, target_speed, area_size, my_graph):
     """" Creates a trace and saves it in the /fanet_deployment/files/traces/ directory. It only creates traces that are feasible, i.e., all targets are covered by at least one position for the given graph.
@@ -30,16 +30,21 @@ def create_trace(n_targets, observation_period, target_speed, area_size, my_grap
     return True
 
 if __name__ == "__main__":
-    n_traces = 20
-    n_targets_list = [5,10,20,30,40,50]
-    observation_period_list = [3,4,5,6,7]
-    target_speed_list = [1,5,10]
-    area_size_list = [100]
-    my_graph = Graph(size_A=100, heights=[45], base_station=(0, 0, 0),n_positions_per_axis=5, communication_range=40, coverage_tan_angle=np.tan(np.pi/6))
+    """This script generates feasible traces and saves them in the FILES_DIR/traces/ directory using the default parameters specified in config.py."""
+    my_graph = Graph(size_A = PARAMETERS["area_size"],
+                     heights = PARAMETERS["heights"],
+                     base_station = PARAMETERS["base_station"],
+                     n_positions_per_axis = PARAMETERS["n_positions"],
+                     communication_range = PARAMETERS["comm_range"],
+                     coverage_angle = PARAMETERS["coverage_angle"])
 
-    for n_targets in n_targets_list:
-        for observation_period in observation_period_list:
-            for target_speed in target_speed_list:
-                for area_size in area_size_list:
-                    for n in range(n_traces):
-                        create_trace(n_targets, observation_period, target_speed, area_size, my_graph)
+
+    for n_targets in PARAMETERS["n_targets"]:
+        for observation_period in PARAMETERS["obsertion_period"]:
+            for target_speed in PARAMETERS["targets_speed"]:
+                for n in range(PARAMETERS["n_instances"]):
+                    create_trace(n_targets,
+                                 observation_period,
+                                 target_speed,
+                                 PARAMETERS["area_size"],
+                                 my_graph)
