@@ -23,9 +23,14 @@ clean-traces:
 check-cplex:
 	@python -c "import cplex" 2>/dev/null && echo "cplex is installed and accessible." || echo "cplex is not accessible. Please refer to the README for more information."
 
-# Target to run all tests
+# Target to run all tests with PyTest
 .PHONY: test
 test:
+	pytest -v tests/ -W ignore::DeprecationWarning
+
+# Target to run all tests with PyTest and coverage report
+.PHONY: test-cov
+test-cov:
 	pytest -v --cov-report term-missing --cov=fanet tests/ -W ignore::DeprecationWarning
 
 # Updates the environment.yml and requirements.txt files
