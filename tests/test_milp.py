@@ -19,9 +19,9 @@ def model_shut_up(milp_model):
 
 def test_basic_0():
     """For this example, we have one sensor in the middle of the area (50,50,0) and only one deployement solution (50,50,10) for a single time step.
-    
+
     This test verifies if the model is built properly, solved and if the solution is correct.
-    
+
     The expected solution is: 142.82857. This is the distance cost for the drone to leave the base station, go to (50,50,10) and go back to the base station.
     """
     targets_trace = Trace(n_targets=1, observation_period=1)
@@ -34,7 +34,7 @@ def test_basic_0():
                         input_graph=graph,
                         alpha = 0,
                         beta = 0)
-    
+
     model_shut_up(milp_model)
     milp_model.build_model()
     milp_model.solve_model()
@@ -61,7 +61,7 @@ def test_basic_1():
                         input_graph=graph,
                         alpha = 0,
                         beta = 0)
-    
+
     model_shut_up(milp_model)
     milp_model.build_model()
     milp_model.solve_model()
@@ -84,14 +84,14 @@ def test_save_file():
                         input_graph=graph,
                         alpha = 0,
                         beta = 0)
-    
+
     model_shut_up(milp_model)
     milp_model.build_model()
     milp_model.solve_model()
-    
+
     assert milp_model.cplex_model.solution.get_status() == CPXMIP_OPTIMAL
     milp_model.cplex_finish()
-    
+
 
 def test_movement_0():
     """In this example, we have two time steps, where the sensor moves from (25,50,0) to (75,50,0). So the drone is expected to go to move between time steps."""
@@ -195,7 +195,7 @@ def test_idle_drones_0():
 
 def test_uncoverable_sensor_0():
     """For this example, we have 4 sensors on the corners (0,0),(100,0),(0,100) and (100,100). There is only one deployement solution (50,50,10) for a single time step.
-    
+
     This test verifies this scenario is infeasible.
     """
     targets_trace = Trace(n_targets = 4, observation_period=1)
@@ -208,17 +208,17 @@ def test_uncoverable_sensor_0():
                         input_graph=graph,
                         alpha = 0,
                         beta = 0)
-    
+
     model_shut_up(milp_model)
     milp_model.build_model()
     milp_model.solve_model()
-    
+
     milp_model.cplex_model.solution.get_status() == CPXMIP_INFEASIBLE
     milp_model.cplex_finish()
 
 def test_sensor_coverage_0():
     """For this example, we have 2 sensors for 2 time steps. The first one stays at (25,50) and the second one at (75,50). Even though both drone can communicate directly with the base station (comm_range = 100). Both must be deployed to cover the sensors.
-    
+
     """
     targets_trace = Trace(n_targets=2, observation_period=2)
     targets_trace.trace_set = [[(25,50),(25,50)],[(75,50),(75,50)]]
