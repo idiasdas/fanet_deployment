@@ -1,12 +1,10 @@
 import os
-import sys
 this_dirctory = os.path.dirname(__file__)
-sys.path.append( this_dirctory + '/../src/')  # Now can import modules in src
 
 import numpy as np
-from targets_trace import Trace
-from graph import Graph
-from milp_model import MILPModel
+from src.targets_trace import Trace
+from src.graph import Graph
+from src.milp_model import MILPModel
 
 CPXMIP_OPTIMAL = 101
 CPXMIP_INFEASIBLE = 103

@@ -1,9 +1,6 @@
 import os
-import sys
 this_dirctory = os.path.dirname(__file__)
-sys.path.append( this_dirctory + '/../src/')
-
-from targets_trace import Trace
+from src.targets_trace import Trace
 
 def test_trace_creation():
     """Creates a trace file, saves it and then loads it again. Verifies that the loaded trace is the same as the original one.

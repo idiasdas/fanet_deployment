@@ -1,7 +1,4 @@
-import os, sys
-this_dirctory = os.path.dirname(__file__)
-sys.path.append( this_dirctory + '/../src/')
-import energy_model
+import src.energy_model as energy_model
 
 def test_energy():
     """Tests the energy model"""

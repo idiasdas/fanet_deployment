@@ -1,9 +1,5 @@
-import os
-import sys
-this_dirctory = os.path.dirname(__file__)
-sys.path.append( this_dirctory + '/../src/')
 import numpy as np
-from graph import Graph
+from src.graph import Graph
 
 def test_graph():
     """Tests the graph class"""

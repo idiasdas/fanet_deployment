@@ -8,8 +8,8 @@ sys.path.append(this_dirctory + '/../src/')
 
 try:
     import numpy as np
-    from targets_trace import Trace
-    from graph import Graph
+    from src.targets_trace import Trace
+    from src.graph import Graph
 except ImportError:
     print("Error importing required modules. Refer to README.md for more information.")
     exit(1)
