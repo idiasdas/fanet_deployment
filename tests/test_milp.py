@@ -48,7 +48,6 @@ def test_basic_0():
     assert round(milp_model.get_objective_value(),5) == 142.82857
     milp_model.cplex_finish()
 
-
 def test_basic_1():
     """In this example, we have two time steps, where the sensor remains in (50,50,0). So the drone is expected to go to (50,50,10) for both time steps."""
     targets_trace = Trace(n_targets=1, observation_period=2)
@@ -70,7 +69,6 @@ def test_basic_1():
     assert round(milp_model.get_objective_value(),5) == 142.82857
     milp_model.cplex_finish()
 
-
 def test_save_file():
     """This test verifies if the method save_solution_to_file is working properly.
     """
@@ -91,7 +89,6 @@ def test_save_file():
 
     assert milp_model.cplex_model.solution.get_status() == CPXMIP_OPTIMAL
     milp_model.cplex_finish()
-
 
 def test_movement_0():
     """In this example, we have two time steps, where the sensor moves from (25,50,0) to (75,50,0). So the drone is expected to go to move between time steps."""
@@ -116,7 +113,6 @@ def test_movement_0():
     round(milp_model.get_objective_value(),5) == 197.48087
     milp_model.cplex_finish()
 
-
 def test_movement_1():
     """In this example, we have two time steps, where the sensor moves from (25,50,0) to (75,50,0). So the drone is expected to go to move between time steps. Unlike test_movement_0, we have only 60m of communication range. So this should be infeasible."""
     targets_trace = Trace(n_targets=1, observation_period=2)
@@ -138,7 +134,6 @@ def test_movement_1():
 
     milp_model.cplex_model.solution.get_status() == CPXMIP_INFEASIBLE
     milp_model.cplex_finish()
-
 
 def test_movement_2():
     """In this example, we have two time steps, where the sensor moves from (25,50,0) to (75,50,0). So the drone is expected to go to move between time steps. Unlike test_movement_0, we have only 60m of communication range but 2 drones available. So at the second time step two drones should be deployed for the flow to reach the sensor."""
@@ -163,7 +158,6 @@ def test_movement_2():
     milp_model.cplex_model.solution.get_status() == CPXMIP_OPTIMAL
     round(milp_model.get_objective_value(),5) == 294.96174
     milp_model.cplex_finish()
-
 
 def test_idle_drones_0():
     """"We repeat test_movement_0, but now we have 10 drones available. So we expect the same solution, but with 9 idle drones."""
@@ -191,7 +185,6 @@ def test_idle_drones_0():
         for drone in range(10):
             assert len(deployement[t][drone]) == len(graph.base_station)
     milp_model.cplex_finish()
-
 
 def test_uncoverable_sensor_0():
     """For this example, we have 4 sensors on the corners (0,0),(100,0),(0,100) and (100,100). There is only one deployement solution (50,50,10) for a single time step.

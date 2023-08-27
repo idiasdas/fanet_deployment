@@ -84,7 +84,6 @@ def test_cplex():
     #SOLVE
     cplex_model.solve()
     assert cplex_model.solution.get_status() == CPXMIP_OPTIMAL
-
     assert round(cplex_model.solution.get_objective_value(),5) == 5.77778
     assert round(cplex_model.solution.get_values("x1"),5) == 2.22222
     assert round(cplex_model.solution.get_values("x2"),5) == 3.55556

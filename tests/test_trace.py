@@ -60,7 +60,6 @@ def test_trace_within_bounds():
 def test_plot():
     """Tests if the function creates an eps file.
     """
-
     n_targets = 5
     observation_period = 3
     target_speed = 20

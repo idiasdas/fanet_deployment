@@ -4,6 +4,7 @@ sys.path.append( this_dirctory + '/../src/')
 import energy_model
 
 def test_energy():
+    """Tests the energy model"""
     energy = energy_model.energy(100, 1000)
     assert energy != None
     energy =  energy_model.energy(0, 0)

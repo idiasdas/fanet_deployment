@@ -35,12 +35,12 @@ class Trace:
     def wall_bounce(self, coordinate: float) -> float:
         """ Bounces a coordinate axis from the walls.
             area_size + 1 -> area_size - 1,
-            2 * area_size + 1 -> 1, 
-            -1 -> 1, 
-            - area_size - 1 -> area_size - 1, 
+            2 * area_size + 1 -> 1,
+            -1 -> 1,
+            - area_size - 1 -> area_size - 1,
             etc.
         Args:
-            coordinate: value of target x or y position. 
+            coordinate: value of target x or y position.
 
         Returns:
             Bounced coordinate.
@@ -51,7 +51,7 @@ class Trace:
             rest = coordinate % self.area_size
             coordinate = self.area_size * sign  + (-1) ** sign * rest
         return coordinate
-    
+
     def generate_target_trace(self) -> list:
         """Generates a sequence o`f positions (list of tuples) of one target inside the area A = (x_max, y_max) with speed target_speed. Random way point model"""
         target_trace = [tuple(np.random.rand(
@@ -111,7 +111,7 @@ class Trace:
             List of positions of all targets at time_step
         """
         return [target_trace[time_step] for target_trace in self.trace_set]
-    
+
     def save_trace(self, file_name: str):
         """Saves the trace to a file.
 
