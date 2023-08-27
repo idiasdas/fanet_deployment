@@ -26,14 +26,13 @@ check-cplex:
 # Target to run all tests
 .PHONY: test
 test:
-	pytest -v --cov-report term-missing --cov=src tests/ -W ignore::DeprecationWarning
+	pytest -v --cov-report term-missing --cov=fanet tests/ -W ignore::DeprecationWarning
 
 # Updates the environment.yml and requirements.txt files
 .PHONY: update-deps
 update-deps:
 	# Update environment.yml
 	conda env export --name fanet | grep -v "prefix:" > environment.yml
-	
+
 	# Create requirements.txt from conda list
 	conda list --name fanet --export | grep -v "^#" | awk -F' ' '{print $$1"=="$$2}' > requirements.txt
-	
