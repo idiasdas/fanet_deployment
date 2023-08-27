@@ -1,7 +1,7 @@
 import numpy as np
 
 class Graph:
-    def __init__(self, size_A: float, heights: float, base_station: tuple,n_positions_per_axis: int, communication_range: float, coverage_tan_angle: float):
+    def __init__(self, size_A: float, heights: float, base_station: tuple,n_positions_per_axis: int, communication_range: float, coverage_angle: float):
         """Describes the graph form which we build the linear programs.
 
         Args:
@@ -10,14 +10,14 @@ class Graph:
             base_station: Coordinates of the base station
             n_positions_per_axis: How many slices we want to divide the area into for each axis. The resulting grid will have n_positions_per_axis^2 positions.
             communication_range: Maximum distance for communications drone to drone and base to drone
-            coverage_tan_angle: The tangent of the angle of the drones' coverage. The covered area is a cone with the base on the surface below the drone and the apex on the drone. The higher the drone, the bigger the covered area. To determine the covered area, we multiply the tangent of the angle by the height of the drone.
+            coverage_angle: The angle of the drones' coverage in radians.
         """
         self.size_A = size_A
         self.heights = heights
         self.base_station = base_station
         self.n_positions_per_axis = n_positions_per_axis
         self.communication_range = communication_range
-        self.coverage_tan_angle = coverage_tan_angle
+        self.coverage_tan_angle = np.tan(coverage_angle)
 
         self.set_position_grid()
 
