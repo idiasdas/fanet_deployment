@@ -23,8 +23,29 @@ def test_trace_creation():
     assert sensors_trace.time_step_delta == file_sensors_trace.time_step_delta
     assert sensors_trace.trace_set == file_sensors_trace.trace_set
 
-def test_trace_bounce():
-    """Tests if the targets bounce off the walls.
+def test_wall_bounce():
+    """Tests if the function bounces the targets off the walls.
+    """
+    n_targets = 100
+    observation_period = 2
+    target_speed = 200
+    area_size = 10
+    sensors_trace = Trace(n_targets, observation_period, target_speed, area_size)
+    assert sensors_trace.wall_bounce(0) == 0
+    assert sensors_trace.wall_bounce(area_size) == area_size
+    assert sensors_trace.wall_bounce(-1) == 1
+    assert sensors_trace.wall_bounce(- area_size - 1) == area_size - 1
+    assert sensors_trace.wall_bounce(- area_size * 2 - 1) == 1
+    assert sensors_trace.wall_bounce(- area_size * 3 - 1) == area_size - 1
+    assert sensors_trace.wall_bounce(- area_size * 4 - 1) == 1
+    assert sensors_trace.wall_bounce(area_size + 1) == area_size - 1
+    assert sensors_trace.wall_bounce(area_size * 2 + 1) == 1
+    assert sensors_trace.wall_bounce(area_size * 3 + 1) == area_size - 1
+    assert sensors_trace.wall_bounce(area_size * 4 + 1) == 1
+
+
+def test_trace_within_bounds():
+    """Tests if the targets remain inside the area.
     """
     n_targets = 100
     observation_period = 2

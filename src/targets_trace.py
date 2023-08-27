@@ -32,6 +32,26 @@ class Trace:
         normalized_direction = tuple(direction / np.linalg.norm(direction))
         return normalized_direction
 
+    def wall_bounce(self, coordinate: float) -> float:
+        """ Bounces a coordinate axis from the walls.
+            area_size + 1 -> area_size - 1,
+            2 * area_size + 1 -> 1, 
+            -1 -> 1, 
+            - area_size - 1 -> area_size - 1, 
+            etc.
+        Args:
+            coordinate: value of target x or y position. 
+
+        Returns:
+            Bounced coordinate.
+        """
+        coordinate = abs(coordinate)
+        if coordinate > self.area_size:
+            sign = ((coordinate // self.area_size) % 2)
+            rest = coordinate % self.area_size
+            coordinate = self.area_size * sign  + (-1) ** sign * rest
+        return coordinate
+    
     def generate_target_trace(self) -> list:
         """Generates a sequence o`f positions (list of tuples) of one target inside the area A = (x_max, y_max) with speed target_speed. Random way point model"""
         target_trace = [tuple(np.random.rand(
@@ -44,14 +64,8 @@ class Trace:
             new_x = last_x + direction[0] * self.target_speed * self.time_step_delta
             new_y = last_y + direction[1] * self.target_speed * self.time_step_delta
             # Bounces off the walls.
-            if new_x > self.area_size:
-                new_x = self.area_size - new_x % self.area_size
-            if new_x < 0:
-                new_x = abs(new_x % self.area_size)
-            if new_y > self.area_size:
-                new_y = self.area_size - new_y % self.area_size
-            if new_y < 0:
-                new_y = abs(new_y % self.area_size)
+            new_x = self.wall_bounce(new_x)
+            new_y = self.wall_bounce(new_y)
             target_trace += [(new_x, new_y)]
         return target_trace
 
