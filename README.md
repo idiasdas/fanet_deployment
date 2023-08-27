@@ -8,25 +8,26 @@ This project is a remake of the works presented on:
 
 Below you will find the instructions to replicate our experiments. If you run into any problems or have any questions about this projet (papers, code or whatever), do not exitate to contact me directly on [igor.dias-da-silva@inria.fr](mailto:igor.dias-da-silva.inria.fr).
 
-## Requirements
+## REQUIREMENTS
 
 For this project you will need:
-- **Python 3.7**: This project requires Python 3.7 specifically because of cplex. 
+- **Python 3.7**: This project requires Python 3.7 specifically because of cplex.
     - If you don't have python 3.7 installed, please [download and install it](https://www.python.org/downloads/release/python-3716/) first.
     - I'm not sure about newer versions of cplex, but I used version 1210 and the API doesn't work with newer versions of python.
 - **CPLEX**: Ensure that CPLEX is properly installed and accessible via Python:
     - [Download and install it](https://www.ibm.com/docs/en/icos/20.1.0?topic=cplex-installing).
     - [Set the environment variable PYTHONPATH](https://www.ibm.com/docs/en/icos/20.1.0?topic=cplex-setting-up-python-api).
     - Below you can find how to verify if cplex is properly installed using the makefile.
-## Setup
 
- **Clone the Repository**:
+## SETUP
+
+**Clone the Repository**:
 ```bash
 git clone https://github.com/idiasdas/fanet_deployment
 cd fanet_deployment
 ```
 
- **Setup Environment**: 
+**Setup Environment**:
 You can choose between a virtual environment and a conda environment. Run the following command to create a virtual environment named `fanet` and install the required packages using pip:
 ```bash
 make setup-venv
@@ -47,20 +48,35 @@ The followig command activates the conda environment `fanet`:
 conda activate fanet
 ```
 
- **Verify CPLEX Installation**:
+**Verify CPLEX Installation**:
 Ensure that CPLEX is properly installed and accessible in the virtual environment:
 ```bash
 make check-cplex
 ```
 
-## Tests
+## TESTS
 This project uses `PyTest` and all tests can be found in `fanet_deployment/tests/`. If you wish to run these tests, use:
 
 ```bash
 make test
 ```
 
-## Create the sensors traces
+If you want a coverage report, use:
+
+```bash
+make test-cov
+```
+
+## CONFIGURATION
+
+The main configuration files are:
+- `config.py`: Defines TESTS_OUTPUT_DIR and FILES_DIR which determine where the tests outputs and the models results are saved. It also defines PARAMETERS, a dictionary with all relevant information used by the models.
+- `parameters.py`: By default, PARAMETERS = DEFAULT_PARAMETERS which are defined here. Use this file to define your own parameters dictionaries and then set PARAMETERS accordingly in `config.py`.
+- `cplex_constants`: This files constains constants used in cplex module to determine variables types, constraints senses and objective status. I have defined them here so that any changes to these values can be quickly applied to the project. Although these are very unlikely.
+
+**If you make any changes to these files, run the tests again** to ensure they are valid. Keep in mind the tests only verify the dictionary referenced by PARAMETERS in `config.py`.
+
+## CREATE THE SENSORS TRACES
 
 You will need to create the targets traces (sequence of sensors positions) that are the input to the models. To do so, run the following command:
 
