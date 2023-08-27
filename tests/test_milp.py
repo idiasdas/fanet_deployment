@@ -264,3 +264,56 @@ def test_sensor_coverage_1():
     milp_model.cplex_model.solution.get_status() == CPXMIP_INFEASIBLE
 
     milp_model.cplex_finish()
+
+def test_variables_types():
+    """Tests if variables defined to cplex have the correct type.
+    """
+    observation_period = 2
+    n_available_drones=1
+    targets_trace = Trace(n_targets=2, observation_period=observation_period)
+    targets_trace.trace_set = [[(25,50),(25,50)],[(75,50),(75,50)]]
+    graph = Graph(100, [10], (0,0,0), 1, 100, np.tan(np.pi/6))
+    graph.deployment_positions = [(25,50,10),(75,50,10)]
+    milp_model = MILPModel(n_available_drones=1,
+                        observation_period=2,
+                        time_step_delta=1,
+                        targets_trace=targets_trace,
+                        input_graph=graph,
+                        alpha = 0,
+                        beta = 0)
+
+    model_shut_up(milp_model)
+
+    milp_model.build_model()
+    # Testing the variables z_t_p for all t \in T and p \in P \cup {base_station}
+    for t in range(observation_period):
+        for p in graph.deployment_positions:
+            assert milp_model.get_variable(milp_model.var_z_t_p(t,p))["type"] == milp_model.BINARY_VARIABLE
+
+    # Testing the variables z_t_drone_p for all t \in T, drone \in n_available_drones and p \in P \cup {base_station}
+    for t in range(observation_period):
+        for drone in range(n_available_drones):
+            assert milp_model.get_variable(milp_model.var_z_t_drone_p(t,drone,graph.base_station))["type"] == milp_model.BINARY_VARIABLE
+            for p in graph.deployment_positions:
+                assert milp_model.get_variable(milp_model.var_z_t_drone_p(t,drone,p))["type"] == milp_model.BINARY_VARIABLE
+
+    # Testing the flow variables f_t_p_q for all t \in T, p,q \in P and p \neq q
+    for t in range(observation_period):
+        for p in graph.deployment_positions + [graph.base_station]:
+            for q in graph.get_positions_in_comm_range(p):
+                assert milp_model.get_variable(milp_model.var_f_t_p_q(t,p,q))["type"] == milp_model.CONTINUOUS_VARIABLE
+
+    # Testing the flow variables f_t_p_q for all t \in T, sensor_position \in trace_set and delpoyment_position \in P that covers the sensor_position
+    for t in range(observation_period):
+        for sensor_trace in targets_trace.trace_set:
+            sensor_position = sensor_trace[t]
+            for deployment_position in graph.get_target_coverage(sensor_position):
+                assert milp_model.get_variable(milp_model.var_f_t_p_q(t,deployment_position,sensor_position))["type"] == milp_model.CONTINUOUS_VARIABLE
+
+    # Testing the variables z_t_drone_p_q for all t \in T, drone \in n_available_drones, p,q \in P and p \neq q
+    if observation_period > 1: # Otherwise there are no drone movements within the observation period
+        for t in range(observation_period):
+            for drone in range(n_available_drones):
+                for p in graph.deployment_positions + [graph.base_station]:
+                    for q in graph.deployment_positions + [graph.base_station]:
+                        assert milp_model.get_variable(milp_model.var_z_t_drone_p_q(t,drone,p,q))["type"] == milp_model.BINARY_VARIABLE
