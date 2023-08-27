@@ -1,8 +1,8 @@
 from typing import Optional
-from src.graph import Graph
-from src.targets_trace import Trace
-from src.energy_model import energy
-from src.linear_expression import LinearExpression
+from fanet.graph import Graph
+from fanet.targets_trace import Trace
+from fanet.energy_model import energy
+from fanet.linear_expression import LinearExpression
 import cplex
 
 class MILPModel:

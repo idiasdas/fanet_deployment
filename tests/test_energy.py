@@ -1,4 +1,4 @@
-import src.energy_model as energy_model
+import fanet.energy_model as energy_model
 
 def test_energy():
     """Tests the energy model"""

@@ -2,17 +2,10 @@
     If the traces already exist, it does nothing."""
 
 import os
-import sys
-this_dirctory = os.path.dirname(__file__)
-sys.path.append(this_dirctory + '/../src/')
-
-try:
-    import numpy as np
-    from src.targets_trace import Trace
-    from src.graph import Graph
-except ImportError:
-    print("Error importing required modules. Refer to README.md for more information.")
-    exit(1)
+import numpy as np
+from fanet.targets_trace import Trace
+from fanet.graph import Graph
+from fanet.config import FILES_DIR
 
 def create_trace(n_targets, observation_period, target_speed, area_size, my_graph):
     """" Creates a trace and saves it in the /fanet_deployment/files/traces/ directory. It only creates traces that are feasible, i.e., all targets are covered by at least one position for the given graph.
@@ -26,7 +19,7 @@ def create_trace(n_targets, observation_period, target_speed, area_size, my_grap
 
     Returns:
         True if the trace was created, False if it already existed."""
-    file_name = this_dirctory + "/../files/traces/trace_nt_" + str(n_targets) + "_t_" + str(observation_period) + "_v_" + str(target_speed) + "_i_" + str(n) + ".txt"
+    file_name = FILES_DIR + "/traces/trace_nt_" + str(n_targets) + "_t_" + str(observation_period) + "_v_" + str(target_speed) + "_i_" + str(n) + ".txt"
     if os.path.isfile(file_name):
         print("Trace already exists: " + file_name)
         return False

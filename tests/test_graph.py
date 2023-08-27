@@ -1,5 +1,5 @@
 import numpy as np
-from src.graph import Graph
+from fanet.graph import Graph
 
 def test_graph():
     """Tests the graph class"""

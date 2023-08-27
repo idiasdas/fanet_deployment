@@ -2,9 +2,9 @@ import os
 this_dirctory = os.path.dirname(__file__)
 
 import numpy as np
-from src.targets_trace import Trace
-from src.graph import Graph
-from src.milp_model import MILPModel
+from fanet.targets_trace import Trace
+from fanet.graph import Graph
+from fanet.milp_model import MILPModel
 
 CPXMIP_OPTIMAL = 101
 CPXMIP_INFEASIBLE = 103

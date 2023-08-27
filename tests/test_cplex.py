@@ -1,5 +1,5 @@
 import cplex
-from src.linear_expression import LinearExpression
+from fanet.linear_expression import LinearExpression
 
 CPXMIP_OPTIMAL = 101
 
