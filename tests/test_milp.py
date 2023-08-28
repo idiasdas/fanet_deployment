@@ -7,12 +7,6 @@ from fanet.graph import Graph
 from fanet.milp_model import MilpModel
 from fanet.cplex_constants import *
 
-def model_shut_up(milp_model) -> None:
-    milp_model.cplex_model.set_log_stream(None)
-    milp_model.cplex_model.set_error_stream(None)
-    milp_model.cplex_model.set_warning_stream(None)
-    milp_model.cplex_model.set_results_stream(None)
-
 def test_basic_0() -> None:
     """For this example, we have one sensor in the middle of the area (50,50,0) and only one deployement solution (50,50,10) for a single time step.
 
@@ -31,7 +25,7 @@ def test_basic_0() -> None:
                         alpha = 0,
                         beta = 0)
 
-    model_shut_up(milp_model)
+    milp_model.model_shut_up()
     milp_model.build_model()
     milp_model.solve_model()
     out_file = this_dirctory + "/out/test_basic_0.sol"
@@ -57,7 +51,7 @@ def test_basic_1() -> None:
                         alpha = 0,
                         beta = 0)
 
-    model_shut_up(milp_model)
+    milp_model.model_shut_up()
     milp_model.build_model()
     milp_model.solve_model()
 
@@ -79,7 +73,7 @@ def test_save_file() -> None:
                         alpha = 0,
                         beta = 0)
 
-    model_shut_up(milp_model)
+    milp_model.model_shut_up()
     milp_model.build_model()
     milp_model.solve_model()
 
@@ -100,7 +94,7 @@ def test_movement_0() -> None:
                         alpha = 0,
                         beta = 0)
 
-    model_shut_up(milp_model)
+    milp_model.model_shut_up()
 
     milp_model.build_model()
     milp_model.solve_model()
@@ -123,7 +117,7 @@ def test_movement_1() -> None:
                         alpha = 0,
                         beta = 0)
 
-    model_shut_up(milp_model)
+    milp_model.model_shut_up()
 
     milp_model.build_model()
     milp_model.solve_model()
@@ -146,7 +140,7 @@ def test_movement_2() -> None:
                         alpha = 0,
                         beta = 0)
 
-    model_shut_up(milp_model)
+    milp_model.model_shut_up()
 
     milp_model.build_model()
     milp_model.solve_model()
@@ -169,7 +163,7 @@ def test_idle_drones_0() -> None:
                         alpha = 0,
                         beta = 0)
 
-    model_shut_up(milp_model)
+    milp_model.model_shut_up()
     milp_model.build_model()
     milp_model.solve_model()
 
@@ -198,7 +192,7 @@ def test_uncoverable_sensor_0() -> None:
                         alpha = 0,
                         beta = 0)
 
-    model_shut_up(milp_model)
+    milp_model.model_shut_up()
     milp_model.build_model()
     milp_model.solve_model()
 
@@ -221,7 +215,7 @@ def test_sensor_coverage_0() -> None:
                         alpha = 0,
                         beta = 0)
 
-    model_shut_up(milp_model)
+    milp_model.model_shut_up()
 
     milp_model.build_model()
     milp_model.solve_model()
@@ -245,7 +239,7 @@ def test_sensor_coverage_1() -> None:
                         alpha = 0,
                         beta = 0)
 
-    model_shut_up(milp_model)
+    milp_model.model_shut_up()
 
     milp_model.build_model()
     milp_model.solve_model()
@@ -271,7 +265,7 @@ def test_variables_types() -> None:
                         alpha = 0,
                         beta = 0)
 
-    model_shut_up(milp_model)
+    milp_model.model_shut_up()
 
     milp_model.build_model()
     # Testing the variables z_t_p for all t \in T and p \in P \cup {base_station}
