@@ -383,7 +383,12 @@ class MilpModel:
         self.cplex_model.end()
 
     def get_objective_value(self) -> float:
-        """Returns the value of the objective function."""
+        """Returns the value of the objective function. In case of infeasible solution, returns -1."""
+        if self.cplex_model.solution.get_status() == INFEASIBLE_SOLUTION:
+            return -1
+        elif self.cplex_model.solution.get_status() != OPTIMAL_SOLUTION and self.cplex_model.solution.get_status() != OPTIMAL_TOL_SOLUTION:
+            print("Warning: Unexpected solution status.")
+            raise Exception("Unexpected solution status.")
         return self.cplex_model.solution.get_objective_value()
 
     def cplex_save_solution(self, file_name: str) -> None:
