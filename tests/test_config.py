@@ -50,7 +50,7 @@ def test_config_parameters() -> None:
 
     assert isinstance(PARAMETERS["beta"], float) or isinstance(PARAMETERS["beta"], int)
     assert isinstance(PARAMETERS["area_size"], float) or isinstance(PARAMETERS["area_size"], int)
-    assert isinstance(PARAMETERS["obsertion_period"], int)
+    assert isinstance(PARAMETERS["observation_period"], int)
     assert isinstance(PARAMETERS["time_step_delta"], float) or isinstance(PARAMETERS["time_step_delta"], int)
     assert isinstance(PARAMETERS["comm_range"], float) or isinstance(PARAMETERS["comm_range"], int)
     assert isinstance(PARAMETERS["coverage_angle"], float) or isinstance(PARAMETERS["coverage_angle"], int)
