@@ -31,11 +31,11 @@ if __name__ == "__main__":
     It saves the solutions in the experiment directory.
     If the solution already exists for an instance, it skips that instance.
     """
-    if os.path.isdir(FILES_DIR + PARAMETERS["experiment_name"]) == False:
+    if not os.path.isdir(FILES_DIR + PARAMETERS["experiment_name"]):
         try:
             os.mkdir(FILES_DIR + PARAMETERS["experiment_name"])
         except OSError:
-            print ("Creation of the directory %s failed" % (FILES_DIR + PARAMETERS["experiment_name"]))
+            print("Creation of the directory %s failed" % (FILES_DIR + PARAMETERS["experiment_name"]))
             exit(1)
 
     file_parameters = open(FILES_DIR + PARAMETERS["experiment_name"] + "/parameters.txt", "w")
