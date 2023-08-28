@@ -16,7 +16,7 @@ def test_config() -> None:
     assert isinstance(OPTIMAL_SOLUTION, int)
     assert isinstance(INFEASIBLE_SOLUTION, int)
 
-def test_config_PARAMETERS() -> None:
+def test_config_parameters() -> None:
     """Tests if the PARAMETERS dictionary is correct."""
     assert isinstance(PARAMETERS["n_drones"], list)
     for n_drones in PARAMETERS["n_drones"]:
