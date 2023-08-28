@@ -392,9 +392,10 @@ class MilpModel:
         return self.cplex_model.solution.get_objective_value()
 
     def cplex_save_solution(self, file_name: str) -> None:
-        """Saves the solution of the linear program to a file.
+        """Saves the solution of the linear program to a file using cplex method. Constains too much information.
 
         Args:
             file_name (str): Name of the file to save the solution.
         """
         self.cplex_model.solution.write(file_name)
+
