@@ -41,3 +41,8 @@ update-deps:
 
 	# Create requirements.txt from conda list
 	conda list --name fanet --export | grep -v "^#" | awk -F' ' '{print $$1"=="$$2}' > requirements.txt
+
+# Target to create and solve the MILP model over the generated traces with PARAMETERS
+.PHONY: solve-milp
+solve-milp:
+	python fanet/solve_milp.py

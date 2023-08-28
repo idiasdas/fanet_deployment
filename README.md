@@ -111,3 +111,15 @@ This command verifies if the traces already exist and if they don't, creates the
 make clean-traces
 ```
 Now that you are in an activate `fanet` virtual environment and `make check-cplex` has validated the accessiblity to the cplex model, you can execute any code in this project. The following section explains how to replicate our experiments results.
+
+## SOLVE MILP MODEL
+
+Once the targets traces have been created we can apply our models to them. To build and solve the Mixed-Integer Linear Program defined in [IEEE-9149781](https://ieeexplore.ieee.org/abstract/document/9149781), use:
+
+```bash
+make solve-milp
+```
+
+By default, it will use DEFAULT_PARAMETERS, which save the results in `fanet_deployment/files/default/`.
+
+
