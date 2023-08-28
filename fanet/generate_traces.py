@@ -3,7 +3,7 @@
 
 import os
 import numpy as np
-from fanet.targets_trace import Trace
+from fanet.targets_trace import TargetsTrace
 from fanet.graph import Graph
 from fanet.config import FILES_DIR, PARAMETERS
 
@@ -23,9 +23,9 @@ def create_trace(n_targets, observation_period, target_speed, area_size, my_grap
     if os.path.isfile(file_name):
         print("Trace already exists: " + file_name)
         return False
-    new_trace = Trace(n_targets, observation_period, target_speed, area_size)
+    new_trace = TargetsTrace(n_targets, observation_period, target_speed, area_size)
     while not my_graph.verify_trace_feasiblity(new_trace.trace_set):
-        new_trace = Trace(n_targets, observation_period, target_speed, area_size)
+        new_trace = TargetsTrace(n_targets, observation_period, target_speed, area_size)
     new_trace.save_trace(file_name)
     return True
 

@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import collections as mc
 
-class Trace:
+class TargetsTrace:
     def __init__(self, n_targets: Optional[int] = 5, observation_period: Optional[int] = 5, target_speed: Optional[float] = 5, area_size: Optional[float] = 100, time_step_delta: Optional[float] = 1, load_file: Optional[str] = "") -> None:
         """Represents the trajectories of n targets inside an square area A during observation_period time steps. The targets move at a constant speed target_speed. The area A has size area_size^2 and the time between time steps is time_step_delta. If a load file is provided, the trace is loaded from the file. Otherwise, a new trace is generated.
 
@@ -27,7 +27,7 @@ class Trace:
             self.load_trace(load_file)
 
     def generate_random_direction(self) -> tuple:
-        """Generates a random normalized vector of dimension 2, returns as a tuple."""
+        """Generates a random normalized vector of dimension 2, returns as a tuple (x,y)."""
         direction = (np.random.rand(2) - 0.5) * 2
         normalized_direction = tuple(direction / np.linalg.norm(direction))
         return normalized_direction

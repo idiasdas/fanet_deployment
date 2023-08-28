@@ -1,6 +1,6 @@
 import os
 this_dirctory = os.path.dirname(__file__)
-from fanet.targets_trace import Trace
+from fanet.targets_trace import TargetsTrace
 
 def test_trace_creation() -> None:
     """Creates a trace file, saves it and then loads it again. Verifies that the loaded trace is the same as the original one.
@@ -9,9 +9,9 @@ def test_trace_creation() -> None:
     observation_period = 3
     target_speed = 20
     area_size = 100
-    sensors_trace = Trace(n_targets, observation_period, target_speed, area_size)
+    sensors_trace = TargetsTrace(n_targets, observation_period, target_speed, area_size)
     sensors_trace.save_trace(this_dirctory + "/out/test_trace.txt")
-    file_sensors_trace = Trace(load_file = this_dirctory + "/out/test_trace.txt")
+    file_sensors_trace = TargetsTrace(load_file = this_dirctory + "/out/test_trace.txt")
 
     assert sensors_trace.n_targets == file_sensors_trace.n_targets
     assert sensors_trace.observation_period == file_sensors_trace.observation_period
@@ -27,7 +27,7 @@ def test_wall_bounce() -> None:
     observation_period = 2
     target_speed = 200
     area_size = 10
-    sensors_trace = Trace(n_targets, observation_period, target_speed, area_size)
+    sensors_trace = TargetsTrace(n_targets, observation_period, target_speed, area_size)
     assert sensors_trace.wall_bounce(0) == 0
     assert sensors_trace.wall_bounce(area_size) == area_size
     assert sensors_trace.wall_bounce(-1) == 1
@@ -48,7 +48,7 @@ def test_trace_within_bounds() -> None:
     observation_period = 2
     target_speed = 200
     area_size = 10
-    sensors_trace = Trace(n_targets, observation_period, target_speed, area_size)
+    sensors_trace = TargetsTrace(n_targets, observation_period, target_speed, area_size)
     for target_trace in sensors_trace.trace_set:
         for position in target_trace:
             assert position[0] >= 0 and position[0] <= area_size
@@ -61,7 +61,7 @@ def test_plot() -> None:
     observation_period = 3
     target_speed = 20
     area_size = 100
-    sensors_trace = Trace(n_targets, observation_period, target_speed, area_size)
+    sensors_trace = TargetsTrace(n_targets, observation_period, target_speed, area_size)
     sensors_trace.plot_trace(this_dirctory + "/out/test_trace_plot.eps")
 
     assert os.path.exists(this_dirctory + "/out/test_trace_plot.eps")

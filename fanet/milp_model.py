@@ -1,22 +1,13 @@
 from typing import Optional
 from fanet.graph import Graph
-from fanet.targets_trace import Trace
+from fanet.targets_trace import TargetsTrace
 from fanet.energy_model import energy
 from fanet.linear_expression import LinearExpression
+from fanet.cplex_constants import *
 import cplex
 
-class MILPModel:
-    # Constants for variables types
-    BINARY_VARIABLE = "B"
-    INTEGER_VARIABLE = "I"
-    CONTINUOUS_VARIABLE = "C"
-
-    # Constants for constraints sense
-    GREATER_EQUAL = "G"
-    EQUAL = "E"
-    LESS_EQUAL = "L"
-
-    def __init__(self, n_available_drones: int, observation_period: int, time_step_delta: float, targets_trace: Trace, input_graph: Graph, alpha: float, beta: float, model_name: Optional[str] = "MILP_Model") -> None:
+class MilpModel:
+    def __init__(self, n_available_drones: int, observation_period: int, time_step_delta: float, targets_trace: TargetsTrace, input_graph: Graph, alpha: float, beta: float, model_name: Optional[str] = "MILP_Model") -> None:
         """Builds the linear program to obtain the optimal deployment of drones to cover all targets at all time steps.
 
         Args:
@@ -51,7 +42,7 @@ class MILPModel:
             var_name: Name of the variable.
             var_lb: Lower bound of the variable.
             var_up: Upper bound of the variable.
-            var_type: Type of the variable. Use the constants CONTINUOUS_VARIABLE, INTEGER_VARIABLE or BINARY_VARIABLE.
+            var_type: Type of the variable. Use the constants defined in cplex_constants.py.
         """
         self.variables.append({"name": var_name, "lb": var_lb, "ub": var_up, "type": var_type})
 
@@ -122,29 +113,29 @@ class MILPModel:
         """Defines all the variables of the linear program. Uses the function define_variable to save the information of the variables in the corresponding lists. Later the variables must be added to the cplex model."""
         # Defining the variables z_t_p for all t \in T and p \in P \cup {base_station}
         for t in range(self.observation_period):
-            self.define_variable(self.var_z_t_p(t,self.input_graph.base_station),0,self.n_available_drones,self.INTEGER_VARIABLE)
+            self.define_variable(self.var_z_t_p(t,self.input_graph.base_station),0,self.n_available_drones,INTEGER_VARIABLE)
             for p in self.input_graph.deployment_positions:
-                self.define_variable(self.var_z_t_p(t,p),0,1,self.BINARY_VARIABLE)
+                self.define_variable(self.var_z_t_p(t,p),0,1,BINARY_VARIABLE)
 
         # Defining the variables z_t_drone_p for all t \in T, drone \in n_available_drones and p \in P \cup {base_station}
         for t in range(self.observation_period):
             for drone in range(self.n_available_drones):
-                self.define_variable(self.var_z_t_drone_p(t,drone,self.input_graph.base_station),0,1,self.BINARY_VARIABLE)
+                self.define_variable(self.var_z_t_drone_p(t,drone,self.input_graph.base_station),0,1,BINARY_VARIABLE)
                 for p in self.input_graph.deployment_positions:
-                    self.define_variable(self.var_z_t_drone_p(t,drone,p),0,1,self.BINARY_VARIABLE)
+                    self.define_variable(self.var_z_t_drone_p(t,drone,p),0,1,BINARY_VARIABLE)
 
         # Defining the flow variables f_t_p_q for all t \in T, p,q \in P and p \neq q
         for t in range(self.observation_period):
             for p in self.input_graph.deployment_positions + [self.input_graph.base_station]:
                 for q in self.input_graph.get_positions_in_comm_range(p):
-                    self.define_variable(self.var_f_t_p_q(t,p,q),0,len(self.targets_trace.trace_set),self.CONTINUOUS_VARIABLE)
+                    self.define_variable(self.var_f_t_p_q(t,p,q),0,len(self.targets_trace.trace_set),CONTINUOUS_VARIABLE)
 
         # Defining the flow variables f_t_p_q for all t \in T, sensor_position \in trace_set and delpoyment_position \in P that covers the sensor_position
         for t in range(self.observation_period):
             for sensor_trace in self.targets_trace.trace_set:
                 sensor_position = sensor_trace[t]
                 for deployment_position in self.input_graph.get_target_coverage(sensor_position):
-                    self.define_variable(self.var_f_t_p_q(t,deployment_position,sensor_position),0,len(self.targets_trace.trace_set),self.CONTINUOUS_VARIABLE)
+                    self.define_variable(self.var_f_t_p_q(t,deployment_position,sensor_position),0,len(self.targets_trace.trace_set),CONTINUOUS_VARIABLE)
 
         # Defining the variables z_t_drone_p_q for all t \in T, drone \in n_available_drones, p,q \in P and p \neq q
         if self.observation_period > 1: # Otherwise there are no drone movements within the observation period
@@ -152,7 +143,7 @@ class MILPModel:
                 for drone in range(self.n_available_drones):
                     for p in self.input_graph.deployment_positions + [self.input_graph.base_station]:
                         for q in self.input_graph.deployment_positions + [self.input_graph.base_station]:
-                            self.define_variable(self.var_z_t_drone_p_q(t,drone,p,q),0,1,self.BINARY_VARIABLE)
+                            self.define_variable(self.var_z_t_drone_p_q(t,drone,p,q),0,1,BINARY_VARIABLE)
 
     def define_constraint(self, constr_name: str, constr_linear_expr: list, constr_sense:int , constr_rhs:float) -> None:
         """Defines a constraint and saves its information in the corresponding lists.
@@ -188,7 +179,7 @@ class MILPModel:
                     constr.add_term(1,self.var_f_t_p_q(t,p,sensor))
 
                 # For any position p, the flow that enters p must be equal to the flow that leaves p at any time step
-                self.define_constraint(constr_name,constr.get_expression(),self.EQUAL,0)
+                self.define_constraint(constr_name,constr.get_expression(),EQUAL,0)
 
             for sensor in self.targets_trace.get_targets_positions_at_time(t):
                 constr = LinearExpression()
@@ -198,7 +189,7 @@ class MILPModel:
                     constr.add_term(1,self.var_f_t_p_q(t,p,sensor))
 
                 # At any time step, a sensor must receive at least one flow
-                self.define_constraint(constr_name,constr.get_expression(),self.GREATER_EQUAL,1)
+                self.define_constraint(constr_name,constr.get_expression(),GREATER_EQUAL,1)
 
     def define_drone_flow_constraints(self) -> None:
         """This constraint ensures a flow only exists if a drone is deployed at the source position."""
@@ -213,7 +204,7 @@ class MILPModel:
                     # (-) Number of sensors * z^t_p
                     constr.add_term(-1*len(self.targets_trace.trace_set),self.var_z_t_p(t,p))
                     # Has to be less or equal to 0
-                    self.define_constraint(constr_name,constr.get_expression(),self.LESS_EQUAL,0)
+                    self.define_constraint(constr_name,constr.get_expression(),LESS_EQUAL,0)
 
                 for q in self.input_graph.get_positions_in_comm_range(p):
                     # f^t_{pq} - |S|z^t_p <= 0
@@ -224,7 +215,7 @@ class MILPModel:
                     # (-) Number of sensors * z^t_p
                     constr.add_term(-1*len(self.targets_trace.trace_set),self.var_z_t_p(t,p))
                     # Has to be less or equal to 0
-                    self.define_constraint(constr_name,constr.get_expression(),self.LESS_EQUAL,0)
+                    self.define_constraint(constr_name,constr.get_expression(),LESS_EQUAL,0)
 
                 for sensor in self.input_graph.get_position_coverage(p,self.targets_trace.get_targets_positions_at_time(t)):
                     constr = LinearExpression()
@@ -234,7 +225,7 @@ class MILPModel:
                     # (-) Number of sensors * z^t_p
                     constr.add_term(-1*len(self.targets_trace.trace_set),self.var_z_t_p(t,p))
                     # Has to be less or equal to 0
-                    self.define_constraint(constr_name,constr.get_expression(),self.LESS_EQUAL,0)
+                    self.define_constraint(constr_name,constr.get_expression(),LESS_EQUAL,0)
 
     def define_drone_integrity_constraints(self) -> None:
         """Defines the constraints to ensure a drone is always placed somewhere in P \cup {base_station} at any time step and that a drone can only be in one position at a time."""
@@ -246,7 +237,7 @@ class MILPModel:
                 for p in self.input_graph.deployment_positions:
                     constr.add_term(1,self.var_z_t_drone_p(t,drone,p))
                 constr.add_term(1,self.var_z_t_drone_p(t,drone,self.input_graph.base_station))
-                self.define_constraint(constr_name,constr.get_expression(),self.EQUAL,1)
+                self.define_constraint(constr_name,constr.get_expression(),EQUAL,1)
 
     def define_position_use_constraints(self) -> None:
         """Defines the constraints to ensure that if there is a drone in p at time t, then z^t_p = 1. And at most one drone can be placed in a position p at a given time step."""
@@ -257,7 +248,7 @@ class MILPModel:
                 for drone in range(self.n_available_drones):
                     constr.add_term(1,self.var_z_t_drone_p(t,drone,p))
                 constr.add_term(-1,self.var_z_t_p(t,p))
-                self.define_constraint(constr_name,constr.get_expression(),self.EQUAL,0)
+                self.define_constraint(constr_name,constr.get_expression(),EQUAL,0)
 
     def define_drone_movement_constraints(self) -> None:
         """Defines the constraints that ensure the definition of the variables z^t_{upq}."""
@@ -272,14 +263,14 @@ class MILPModel:
                         constr_name = f"drone_mov_constr1_t_{t}_drone_{drone}_p_{p}_q_{q}"
                         constr.add_term(1,self.var_z_t_drone_p_q(t,drone,p,q))
                         constr.add_term(-1,self.var_z_t_drone_p(t-1,drone,p))
-                        self.define_constraint(constr_name,constr.get_expression(),self.LESS_EQUAL,0)
+                        self.define_constraint(constr_name,constr.get_expression(),LESS_EQUAL,0)
 
                         # z^t_{upq} - z^t_uq <= 0
                         constr.clear_expression()
                         constr_name = f"drone_mov_constr1_t_{t}_drone_{drone}_p_{p}_q_{q}"
                         constr.add_term(1,self.var_z_t_drone_p_q(t,drone,p,q))
                         constr.add_term(-1,self.var_z_t_drone_p(t,drone,q))
-                        self.define_constraint(constr_name,constr.get_expression(),self.LESS_EQUAL,0)
+                        self.define_constraint(constr_name,constr.get_expression(),LESS_EQUAL,0)
 
                         # z^t_{upq} - z^t_q - z^{t-1}_p >= -1
                         constr.clear_expression()
@@ -287,7 +278,7 @@ class MILPModel:
                         constr.add_term(1,self.var_z_t_drone_p_q(t,drone,p,q))
                         constr.add_term(-1,self.var_z_t_drone_p(t,drone,q))
                         constr.add_term(-1,self.var_z_t_drone_p(t-1,drone,p))
-                        self.define_constraint(constr_name,constr.get_expression(),self.GREATER_EQUAL,-1)
+                        self.define_constraint(constr_name,constr.get_expression(),GREATER_EQUAL,-1)
 
     def define_all_constraints(self) -> None:
         """Defines all the constraints of the linear program. Uses the function define_constraint to save the information of the constraints in the corresponding lists. Later the constraints must be added to the cplex model."""
@@ -402,4 +393,3 @@ class MILPModel:
             file_name (str): Name of the file to save the solution.
         """
         self.cplex_model.solution.write(file_name)
-
