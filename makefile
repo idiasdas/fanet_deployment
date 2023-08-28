@@ -11,7 +11,7 @@ setup-conda:
 # Target to run the generate_traces.py script
 .PHONY: generate-traces
 generate-traces:
-	python src/generate_traces.py
+	python fanet/generate_traces.py
 
 # Target to delete all .txt files (traces) from files/traces
 .PHONY: clean-traces
