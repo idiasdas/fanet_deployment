@@ -1,7 +1,5 @@
 from typing import Optional
 import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib import collections as mc
 
 class TargetsTrace:
     def __init__(self, n_targets: Optional[int] = 5, observation_period: Optional[int] = 5, target_speed: Optional[float] = 5, area_size: Optional[float] = 100, time_step_delta: Optional[float] = 1, load_file: Optional[str] = "") -> None:
@@ -79,27 +77,6 @@ class TargetsTrace:
         for i in range(self.n_targets):
             trace_set.append(self.generate_target_trace())
         return trace_set
-
-    def plot_trace(self, file_name: Optional[str] = "trace_plot.eps") -> None:
-        """Plots the trace of all targets."""
-        fig, ax = plt.subplots(figsize=(6, 4))
-        ax.set(xlim=(0, self.area_size), ylim=(0, self.area_size))
-        plt.xticks(fontsize=16)
-        plt.yticks(fontsize=16)
-
-        # Ploting the history of the sensors
-        for target_trace in self.trace_set:
-            X_target = [target_position[0] for target_position in target_trace]
-            Y_target = [target_position[1] for target_position in target_trace]
-            edges = []
-            for time_step in range(1, self.observation_period):
-                edges.append([target_trace[time_step - 1], target_trace[time_step]])
-            lines = mc.LineCollection(edges, linestyle=":", color="blue")  # lines between subsequent positions
-
-            ax.scatter(X_target, Y_target, color="green", marker="x", s=120)  # targets will be green X
-            ax.add_collection(lines)
-
-        fig.savefig(file_name, bbox_inches="tight", format="eps")
 
     def get_targets_positions_at_time(self, time_step: int) -> list:
         """Returns the positions of all targets at a given time step.

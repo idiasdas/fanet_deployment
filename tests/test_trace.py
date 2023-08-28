@@ -53,16 +53,3 @@ def test_trace_within_bounds() -> None:
         for position in target_trace:
             assert position[0] >= 0 and position[0] <= area_size
             assert position[1] >= 0 and position[1] <= area_size
-
-def test_plot() -> None:
-    """Tests if the function creates an eps file.
-    """
-    n_targets = 5
-    observation_period = 3
-    target_speed = 20
-    area_size = 100
-    sensors_trace = TargetsTrace(n_targets, observation_period, target_speed, area_size)
-    sensors_trace.plot_trace(this_dirctory + "/out/test_trace_plot.eps")
-
-    assert os.path.exists(this_dirctory + "/out/test_trace_plot.eps")
-    os.remove(this_dirctory + "/out/test_trace_plot.eps")
