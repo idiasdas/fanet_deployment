@@ -11,7 +11,7 @@ DEFAULT_PARAMETERS = {
     # speed of the targets in m/s: list of floats
     "targets_speed": [10],
     # number of time steps: integer
-    "obsertion_period": 5,
+    "observation_period": 5,
     # time between each time step in seconds: float
     "time_step_delta": 1,
     # weight between distance and energy: list of floats
@@ -38,7 +38,7 @@ TEST_PARAMETERS = {
     "n_drones": [5],
     "n_targets": [10],
     "targets_speed": [10],
-    "obsertion_period": 5,
+    "observation_period": 5,
     "time_step_delta": 1,
     "alpha": [0],
     "beta": 0.08095,
