@@ -30,21 +30,20 @@ def create_trace(n_targets, observation_period, target_speed, area_size, my_grap
     return True
 
 if __name__ == "__main__":
-    """This script generates feasible traces and saves them in the FILES_DIR/traces/ directory using the default parameters specified in config.py."""
+    """This script generates feasible traces and saves them in the FILES_DIR/traces/ directory using the default parameters specified in config.py. Every trace generated has to be feasible, i.e., all targets are covered by at least one position for the following graph."""
     my_graph = Graph(size_A = PARAMETERS["area_size"],
                      heights = PARAMETERS["heights"],
                      base_station = PARAMETERS["base_station"],
-                     n_positions_per_axis = PARAMETERS["n_positions"],
+                     n_positions_per_axis = PARAMETERS["n_positions"][0],
                      communication_range = PARAMETERS["comm_range"],
                      coverage_angle = PARAMETERS["coverage_angle"])
 
 
     for n_targets in PARAMETERS["n_targets"]:
-        for observation_period in PARAMETERS["obsertion_period"]:
-            for target_speed in PARAMETERS["targets_speed"]:
-                for n in range(PARAMETERS["n_instances"]):
-                    create_trace(n_targets,
-                                 observation_period,
-                                 target_speed,
-                                 PARAMETERS["area_size"],
-                                 my_graph)
+        for target_speed in PARAMETERS["targets_speed"]:
+            for n in range(PARAMETERS["n_instances"]):
+                create_trace(n_targets,
+                                PARAMETERS["obsertion_period"],
+                                target_speed,
+                                PARAMETERS["area_size"],
+                                my_graph)
