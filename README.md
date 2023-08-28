@@ -69,10 +69,31 @@ make test-cov
 
 ## CONFIGURATION
 
-The main configuration files are:
+The directory `/fanet_deployment/fanet/setup/` constains the main configuration files which are:
 - `config.py`: Defines TESTS_OUTPUT_DIR and FILES_DIR which determine where the tests outputs and the models results are saved. It also defines PARAMETERS, a dictionary with all relevant information used by the models.
 - `parameters.py`: By default, PARAMETERS = DEFAULT_PARAMETERS which are defined here. Use this file to define your own parameters dictionaries and then set PARAMETERS accordingly in `config.py`.
 - `cplex_constants`: This files constains constants used in cplex module to determine variables types, constraints senses and objective status. I have defined them here so that any changes to these values can be quickly applied to the project. Although these are very unlikely.
+
+The parameters used are the following:
+| PARAMETER | DESCRIPTION | TYPE |
+| --------- | ----------- | ---- |
+| `n_drones`| number of available drones | list of integers |
+| `n_targets`| number of targets | list of integers |
+| `targets_speed`| speed of the targets in m/s | list of floats |
+| `observation_period`| number of time steps | integer |
+| `time_step_delta`| time between each time step in seconds | float |
+| `alpha`| weight between distance and energy | list of floats |
+| `beta`| normalization factor | float |
+| `area_size`| size of the square area in meters | float |
+| `n_positions`| number of axis splits to form the grid | list of integers |
+| `heights`| number of axis splits to form the grid | list of floats |
+| `base_station`| base station position | tuple of floats (x,y,h) |
+| `comm_range`| communication range in meters | float |
+| `coverage_angle`| coverage angle in radians | float |
+| `n_instances`| number of instances to generate for each parameter combination | integer |
+| `cplex_workmem_limit`| cplex maximum memory in MB | integer |
+| `cplex_time_limit`| cplex maximum time in seconds | integer |
+| `experiment_name`| name of the experiment (becomes a folder in FILES_DIR with the results) | string |
 
 **If you make any changes to these files, run the tests again** to ensure they are valid. Keep in mind the tests only verify the dictionary referenced by PARAMETERS in `config.py`.
 
