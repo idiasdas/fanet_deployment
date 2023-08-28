@@ -359,8 +359,11 @@ class MilpModel:
         self.set_objective_function_to_cplex(self.get_objective_function(), maximize=False)
 
     def solve_model(self) -> None:
-        """Solves the linear program."""
+        """Solves the linear program and saves the time required to reach the solution."""
+        self.start_time = self.cplex_model.get_time()
         self.cplex_model.solve()
+        self.finish_time = self.cplex_model.get_time()
+        self.solution_time = self.finish_time - self.start_time
 
     def get_drones_deployement(self) -> list:
         """Returns the deployment of drones at each time step.
