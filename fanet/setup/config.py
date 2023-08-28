@@ -1,5 +1,5 @@
 import os
-from fanet.parameters import DEFAULT_PARAMETERS, TEST_PARAMETERS
+from fanet.setup.parameters import DEFAULT_PARAMETERS, TEST_PARAMETERS
 
 # Parameters used in the project.
 PARAMETERS = TEST_PARAMETERS

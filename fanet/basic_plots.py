@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib import collections as mc
 from fanet.targets_trace import TargetsTrace
 from fanet.graph import Graph
-from fanet.config import FILES_DIR
+from fanet.setup.config import FILES_DIR
 
 def plot_trace(trace: TargetsTrace, file_name: Optional[str] = FILES_DIR + "trace_plot.eps") -> None:
     """Plots the trace of targets during the whole observation period. Targets are represented by green Xs and their movements are shown with blue lines between subsequent positions.

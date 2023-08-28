@@ -5,7 +5,7 @@ import os
 import numpy as np
 from fanet.targets_trace import TargetsTrace
 from fanet.graph import Graph
-from fanet.config import FILES_DIR, PARAMETERS
+from fanet.setup.config import FILES_DIR, PARAMETERS
 
 def create_trace(n_targets, observation_period, target_speed, area_size, my_graph) -> None:
     """" Creates a trace and saves it in the /fanet_deployment/files/traces/ directory. It only creates traces that are feasible, i.e., all targets are covered by at least one position for the given graph.

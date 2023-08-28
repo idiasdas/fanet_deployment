@@ -5,7 +5,7 @@ import numpy as np
 from fanet.targets_trace import TargetsTrace
 from fanet.graph import Graph
 from fanet.milp_model import MilpModel
-from fanet.cplex_constants import *
+from fanet.setup.cplex_constants import *
 
 def test_basic_0() -> None:
     """For this example, we have one sensor in the middle of the area (50,50,0) and only one deployement solution (50,50,10) for a single time step.

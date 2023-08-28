@@ -2,7 +2,7 @@ import os
 from fanet.targets_trace import TargetsTrace
 from fanet.graph import Graph
 from fanet.milp_model import MilpModel
-from fanet.config import PARAMETERS, FILES_DIR, BASE_DIR, TESTS_OUTPUT_DIR
+from fanet.setup.config import PARAMETERS, FILES_DIR, BASE_DIR, TESTS_OUTPUT_DIR
 
 def run_milp_model(n_targets: int, n_drones: int, target_speed: float, instance: int, graph: Graph, alpha: float) -> float:
     """Runs the milp model for the given parameters and saves the solution in the experiment directory.

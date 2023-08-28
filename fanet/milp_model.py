@@ -3,8 +3,8 @@ from fanet.graph import Graph
 from fanet.targets_trace import TargetsTrace
 from fanet.energy_model import energy
 from fanet.linear_expression import LinearExpression
-from fanet.cplex_constants import *
-from fanet.config import PARAMETERS
+from fanet.setup.cplex_constants import *
+from fanet.setup.config import PARAMETERS
 import cplex
 
 class MilpModel:

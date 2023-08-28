@@ -1,5 +1,5 @@
-from fanet.config import *
-from fanet.cplex_constants import *
+from fanet.setup.config import *
+from fanet.setup.cplex_constants import *
 
 def test_config() -> None:
     """Tests if the config file is correct."""
