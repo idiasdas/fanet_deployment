@@ -3,4 +3,4 @@ __pycache__
 tests/out/*
 .coverage
 .vscode/*
-files/traces/*
+files/*
