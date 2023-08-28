@@ -43,7 +43,7 @@ if __name__ == "__main__":
         for target_speed in PARAMETERS["targets_speed"]:
             for n in range(PARAMETERS["n_instances"]):
                 create_trace(n_targets,
-                                PARAMETERS["obsertion_period"],
+                                PARAMETERS["observation_period"],
                                 target_speed,
                                 PARAMETERS["area_size"],
                                 my_graph)
