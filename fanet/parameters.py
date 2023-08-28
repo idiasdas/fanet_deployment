@@ -2,7 +2,7 @@
     If you want to use different parameters, create a new dictionary and update PARAMETERS in config.py accordingly.
 """
 import numpy as np
-#  Default parameters for the experiements.Parameters of type list have all values considered into the experiments.
+#  Default parameters for the experiements. Parameters of type list have all values considered into the experiments.
 DEFAULT_PARAMETERS = {
     # number of available drones: list of integers
     "n_drones": [3, 5, 10],
@@ -32,6 +32,12 @@ DEFAULT_PARAMETERS = {
     "coverage_angle": np.pi/6,
     # number of instances to generate for each parameter combination: integer
     "n_instances":100,
+    # cplex maximum memory in MB: integer
+    "cplex_workmem_limit": 10000,
+    # cplex maximum time in seconds: integer
+    "cplex_time_limit": 3*3600,
+    # name of the experiment (becomes a folder in FILES_DIR with the results): string
+    "experiment_name": "default",
 }
 
 TEST_PARAMETERS = {
@@ -48,5 +54,8 @@ TEST_PARAMETERS = {
     "base_station": (0, 0, 0),
     "comm_range": 60,
     "coverage_angle": np.pi/6,
-    "n_instances":100,
+    "n_instances":10,
+    "cplex_workmem_limit": 10000,
+    "cplex_time_limit": 10,
+    "experiment_name": "test",
 }
