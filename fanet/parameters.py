@@ -5,9 +5,9 @@ import numpy as np
 #  Default parameters for the experiements.Parameters of type list have all values considered into the experiments.
 DEFAULT_PARAMETERS = {
     # number of available drones: list of integers
-    "n_drones": [3, 4, 5],
+    "n_drones": [3, 5, 10],
     # number of targets: list of integers
-    "n_targets": [1,5,10,20,30,40,50],
+    "n_targets": [1,5,10],
     # speed of the targets in m/s: list of floats
     "targets_speed": [10],
     # number of time steps: integer
@@ -31,5 +31,22 @@ DEFAULT_PARAMETERS = {
     # coverage angle in radians: float
     "coverage_angle": np.pi/6,
     # number of instances to generate for each parameter combination: integer
+    "n_instances":100,
+}
+
+TEST_PARAMETERS = {
+    "n_drones": [5],
+    "n_targets": [10],
+    "targets_speed": [10],
+    "obsertion_period": 5,
+    "time_step_delta": 1,
+    "alpha": [0],
+    "beta": 0.08095,
+    "area_size": 100,
+    "n_positions":[3],
+    "heights":[45],
+    "base_station": (0, 0, 0),
+    "comm_range": 60,
+    "coverage_angle": np.pi/6,
     "n_instances":100,
 }
