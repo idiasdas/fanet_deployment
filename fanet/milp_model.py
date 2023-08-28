@@ -4,6 +4,7 @@ from fanet.targets_trace import TargetsTrace
 from fanet.energy_model import energy
 from fanet.linear_expression import LinearExpression
 from fanet.cplex_constants import *
+from fanet.config import PARAMETERS
 import cplex
 
 class MilpModel:
@@ -31,6 +32,10 @@ class MilpModel:
 
         self.cplex_model = cplex.Cplex()
         self.cplex_model.set_problem_name(model_name)
+        if PARAMETERS["cplex_workmem_limit"] > 0:
+            self.cplex_model.parameters.workmem.set(PARAMETERS["cplex_workmem_limit"])
+        if PARAMETERS["cplex_time_limit"] > 0:
+            self.cplex_model.parameters.timelimit.set(PARAMETERS["cplex_time_limit"])
 
         self.variables = []
         self.constraints = []
@@ -399,3 +404,32 @@ class MilpModel:
         """
         self.cplex_model.solution.write(file_name)
 
+    def save_solution(self, file_name: str) -> None:
+        """Saves the solution of the linear program to a file.
+        It saves the objective function value, time to reach the solution, and the deployment of drones at each time step.
+
+        Args:
+            file_name (str): Name of the file to save the solution.
+        """
+        file = open(file_name,"w")
+        file.write(f"{'Solution status:':<30} {self.get_solution_status()}\n")
+        file.write(f"{'Objective function value:':<30} {self.get_objective_value()}\n")
+        file.write(f"{'Time to reach the solution:':<30} {self.solution_time}\n")
+        file.write(f"{'Drones deployment:':<30}\n")
+        file.write("-------------------------------------------\n")
+        drones_deployement = self.get_drones_deployement()
+        file.write(f"{'time_step:':<15} {'drone:':<11} {'position:':}\n")
+        for time_step in range(len(drones_deployement)):
+            for drone in range(len(drones_deployement[time_step])):
+                file.write(f"{time_step:<15} {drone:<11} {drones_deployement[time_step][drone]}\n")
+
+    def model_shut_up(self) -> None:
+        """Disables cplex output stream."""
+        self.cplex_model.set_log_stream(None)
+        self.cplex_model.set_error_stream(None)
+        self.cplex_model.set_warning_stream(None)
+        self.cplex_model.set_results_stream(None)
+
+    def get_solution_status(self) -> int:
+        """Returns the status of the solution. Use the constants defined in cplex_constants.py."""
+        return self.cplex_model.solution.get_status()
