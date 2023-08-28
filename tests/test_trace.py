@@ -2,7 +2,7 @@ import os
 this_dirctory = os.path.dirname(__file__)
 from fanet.targets_trace import Trace
 
-def test_trace_creation():
+def test_trace_creation() -> None:
     """Creates a trace file, saves it and then loads it again. Verifies that the loaded trace is the same as the original one.
     """
     n_targets = 5
@@ -20,7 +20,7 @@ def test_trace_creation():
     assert sensors_trace.time_step_delta == file_sensors_trace.time_step_delta
     assert sensors_trace.trace_set == file_sensors_trace.trace_set
 
-def test_wall_bounce():
+def test_wall_bounce() -> None:
     """Tests if the function bounces the targets off the walls.
     """
     n_targets = 100
@@ -41,7 +41,7 @@ def test_wall_bounce():
     assert sensors_trace.wall_bounce(area_size * 4 + 1) == 1
 
 
-def test_trace_within_bounds():
+def test_trace_within_bounds() -> None:
     """Tests if the targets remain inside the area.
     """
     n_targets = 100
@@ -54,7 +54,7 @@ def test_trace_within_bounds():
             assert position[0] >= 0 and position[0] <= area_size
             assert position[1] >= 0 and position[1] <= area_size
 
-def test_plot():
+def test_plot() -> None:
     """Tests if the function creates an eps file.
     """
     n_targets = 5

@@ -3,7 +3,7 @@ from fanet.linear_expression import LinearExpression
 
 CPXMIP_OPTIMAL = 101
 
-def test_cplex():
+def test_cplex() -> None:
     """This test verify if the cplex module is working properly.
     It creates a small linear program and solves it.
     ----------------------------------------

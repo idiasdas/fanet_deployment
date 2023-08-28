@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib import collections as mc
 
 class Trace:
-    def __init__(self, n_targets: Optional[int] = 5, observation_period: Optional[int] = 5, target_speed: Optional[float] = 5, area_size: Optional[float] = 100, time_step_delta: Optional[float] = 1, load_file: Optional[str] = ""):
+    def __init__(self, n_targets: Optional[int] = 5, observation_period: Optional[int] = 5, target_speed: Optional[float] = 5, area_size: Optional[float] = 100, time_step_delta: Optional[float] = 1, load_file: Optional[str] = "") -> None:
         """Represents the trajectories of n targets inside an square area A during observation_period time steps. The targets move at a constant speed target_speed. The area A has size area_size^2 and the time between time steps is time_step_delta. If a load file is provided, the trace is loaded from the file. Otherwise, a new trace is generated.
 
         Args:
@@ -80,7 +80,7 @@ class Trace:
             trace_set.append(self.generate_target_trace())
         return trace_set
 
-    def plot_trace(self, file_name: Optional[str] = "trace_plot.eps"):
+    def plot_trace(self, file_name: Optional[str] = "trace_plot.eps") -> None:
         """Plots the trace of all targets."""
         fig, ax = plt.subplots(figsize=(6, 4))
         ax.set(xlim=(0, self.area_size), ylim=(0, self.area_size))
@@ -112,7 +112,7 @@ class Trace:
         """
         return [target_trace[time_step] for target_trace in self.trace_set]
 
-    def save_trace(self, file_name: str):
+    def save_trace(self, file_name: str) -> None:
         """Saves the trace to a file.
 
         Args:
@@ -132,7 +132,7 @@ class Trace:
 
         trace_file.close()
 
-    def load_trace(self, file_name: str):
+    def load_trace(self, file_name: str) -> None:
         """Loads a trace from a file.
 
         Args:

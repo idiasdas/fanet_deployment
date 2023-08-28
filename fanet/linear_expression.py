@@ -1,10 +1,10 @@
 class LinearExpression:
-    def __init__(self):
+    def __init__(self) -> None:
         """Describes a linear expression as a list [[variables],[coefficients]].]"""
         self.variables = []
         self.coefficients = []
-    
-    def add_term(self, coefficient: float, variable: str):
+
+    def add_term(self, coefficient: float, variable: str) -> None:
         """Adds a term to the expression.
 
         Args:
@@ -21,22 +21,22 @@ class LinearExpression:
             List of terms of the expression
         """
         return [self.variables, self.coefficients]
-    
+
     def get_tuple_expression(self) -> list:
         """Returns the expression as a list of tuples. For some reason (bad API) cplex API doesn't use the notation of linear expressions for constraints and objective function. Instead it uses a list of tuples with the form (variable_name (str), coefficient (float)).
-    
+
 
         Returns:
             List of tuples (variable, coefficient) of the expression
         """
         return list(zip(self.variables, self.coefficients))
-    
-    def clear_expression(self):
+
+    def clear_expression(self) -> None:
         """Clears the expression."""
         self.variables = []
         self.coefficients = []
 
-    def merge_duplicates(self):
+    def merge_duplicates(self) -> None:
         """When there are duplicates of variables, it merges them into one term. [["x1","x2","x1"],[1,2,3]] -> [["x1","x2"],[4,2]]"""
         variables = []
         coefficients = []

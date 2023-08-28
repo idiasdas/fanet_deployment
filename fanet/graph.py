@@ -1,7 +1,7 @@
 import numpy as np
 
 class Graph:
-    def __init__(self, size_A: float, heights: float, base_station: tuple,n_positions_per_axis: int, communication_range: float, coverage_angle: float):
+    def __init__(self, size_A: float, heights: float, base_station: tuple,n_positions_per_axis: int, communication_range: float, coverage_angle: float) -> None:
         """Describes the graph form which we build the linear programs.
 
         Args:
@@ -21,7 +21,7 @@ class Graph:
 
         self.set_position_grid()
 
-    def set_position_grid(self):
+    def set_position_grid(self) -> None:
         """ Sets the set P as all the positions in the grid inside the area A."""
         self.deployment_positions = [(x, y, z) for x in np.arange(0, self.size_A, self.size_A/(self.n_positions_per_axis + 1)) for y in np.arange(0, self.size_A, self.size_A/(self.n_positions_per_axis + 1)) for z in self.heights if x!= 0 and y != 0]
 

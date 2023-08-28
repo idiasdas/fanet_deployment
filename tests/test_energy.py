@@ -1,6 +1,6 @@
 import fanet.energy_model as energy_model
 
-def test_energy():
+def test_energy() -> None:
     """Tests the energy model"""
     energy = energy_model.energy(100, 1000)
     assert energy != None

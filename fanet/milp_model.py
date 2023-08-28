@@ -16,7 +16,7 @@ class MILPModel:
     EQUAL = "E"
     LESS_EQUAL = "L"
 
-    def __init__(self, n_available_drones: int, observation_period: int, time_step_delta: float, targets_trace: Trace, input_graph: Graph, alpha: float, beta: float, model_name: Optional[str] = "MILP_Model"):
+    def __init__(self, n_available_drones: int, observation_period: int, time_step_delta: float, targets_trace: Trace, input_graph: Graph, alpha: float, beta: float, model_name: Optional[str] = "MILP_Model") -> None:
         """Builds the linear program to obtain the optimal deployment of drones to cover all targets at all time steps.
 
         Args:
@@ -44,7 +44,7 @@ class MILPModel:
         self.variables = []
         self.constraints = []
 
-    def define_variable(self, var_name: str, var_lb: float, var_up: float, var_type: str):
+    def define_variable(self, var_name: str, var_lb: float, var_up: float, var_type: str) -> None:
         """Defines a variable and saves it in self.variables list. This function does not add the variables to the cplex model. Using these lists to add variables and constraints in batches is faster than adding them one by one to cplex.
 
         Args:
@@ -118,7 +118,7 @@ class MILPModel:
         """
         return f"z_t_{time_step}_drone_{drone}_p_{position_p}_q_{position_q}".replace(" ","")
 
-    def define_all_variables(self):
+    def define_all_variables(self) -> None:
         """Defines all the variables of the linear program. Uses the function define_variable to save the information of the variables in the corresponding lists. Later the variables must be added to the cplex model."""
         # Defining the variables z_t_p for all t \in T and p \in P \cup {base_station}
         for t in range(self.observation_period):
@@ -154,7 +154,7 @@ class MILPModel:
                         for q in self.input_graph.deployment_positions + [self.input_graph.base_station]:
                             self.define_variable(self.var_z_t_drone_p_q(t,drone,p,q),0,1,self.BINARY_VARIABLE)
 
-    def define_constraint(self, constr_name: str, constr_linear_expr: list, constr_sense:int , constr_rhs:float):
+    def define_constraint(self, constr_name: str, constr_linear_expr: list, constr_sense:int , constr_rhs:float) -> None:
         """Defines a constraint and saves its information in the corresponding lists.
 
         This function does not add the constraints to the CPLEX model. Using these lists for batch additions is faster than adding constraints individually.
@@ -167,7 +167,7 @@ class MILPModel:
         """
         self.constraints.append({"name": constr_name, "linear_expr": constr_linear_expr, "sense": constr_sense, "rhs": constr_rhs})
 
-    def define_flow_constraints(self):
+    def define_flow_constraints(self) -> None:
         """Defines the flow constraints for all time steps."""
         for t in range(self.observation_period):
             for p in self.input_graph.deployment_positions:
@@ -200,7 +200,7 @@ class MILPModel:
                 # At any time step, a sensor must receive at least one flow
                 self.define_constraint(constr_name,constr.get_expression(),self.GREATER_EQUAL,1)
 
-    def define_drone_flow_constraints(self):
+    def define_drone_flow_constraints(self) -> None:
         """This constraint ensures a flow only exists if a drone is deployed at the source position."""
         for t in range(self.observation_period):
             for p in self.input_graph.deployment_positions:
@@ -236,7 +236,7 @@ class MILPModel:
                     # Has to be less or equal to 0
                     self.define_constraint(constr_name,constr.get_expression(),self.LESS_EQUAL,0)
 
-    def define_drone_integrity_constraints(self):
+    def define_drone_integrity_constraints(self) -> None:
         """Defines the constraints to ensure a drone is always placed somewhere in P \cup {base_station} at any time step and that a drone can only be in one position at a time."""
 
         for t in range(self.observation_period):
@@ -248,7 +248,7 @@ class MILPModel:
                 constr.add_term(1,self.var_z_t_drone_p(t,drone,self.input_graph.base_station))
                 self.define_constraint(constr_name,constr.get_expression(),self.EQUAL,1)
 
-    def define_position_use_constraints(self):
+    def define_position_use_constraints(self) -> None:
         """Defines the constraints to ensure that if there is a drone in p at time t, then z^t_p = 1. And at most one drone can be placed in a position p at a given time step."""
         for t in range(self.observation_period):
             for p in self.input_graph.deployment_positions:
@@ -259,7 +259,7 @@ class MILPModel:
                 constr.add_term(-1,self.var_z_t_p(t,p))
                 self.define_constraint(constr_name,constr.get_expression(),self.EQUAL,0)
 
-    def define_drone_movement_constraints(self):
+    def define_drone_movement_constraints(self) -> None:
         """Defines the constraints that ensure the definition of the variables z^t_{upq}."""
         if self.observation_period <= 1: # In this case there are no movements within the observation period so there is no need to define these constraints
             return
@@ -289,7 +289,7 @@ class MILPModel:
                         constr.add_term(-1,self.var_z_t_drone_p(t-1,drone,p))
                         self.define_constraint(constr_name,constr.get_expression(),self.GREATER_EQUAL,-1)
 
-    def define_all_constraints(self):
+    def define_all_constraints(self) -> None:
         """Defines all the constraints of the linear program. Uses the function define_constraint to save the information of the constraints in the corresponding lists. Later the constraints must be added to the cplex model."""
         self.define_flow_constraints()
         self.define_drone_flow_constraints()
@@ -331,7 +331,7 @@ class MILPModel:
 
         return obj_func.get_tuple_expression() # For some reason cplex API doesn't use the notation of linear expressions for constraints and objective function. Instead it uses a list of tuples with the form (variable_name (str), coefficient (float)).
 
-    def set_variables_to_cplex(self):
+    def set_variables_to_cplex(self) -> None:
         """Adds the variables to the cplex model."""
         var_names = [var["name"] for var in self.variables]
         var_lower_bounds = [var["lb"] for var in self.variables]
@@ -339,7 +339,7 @@ class MILPModel:
         var_types = [var["type"] for var in self.variables]
         self.cplex_model.variables.add(names = var_names, lb = var_lower_bounds, ub = var_upper_bounds, types = var_types)
 
-    def set_constraints_to_cplex(self):
+    def set_constraints_to_cplex(self) -> None:
         """Adds the constraints to the cplex model."""
         constr_names = [constr["name"] for constr in self.constraints]
         constr_linear_expr = [constr["linear_expr"] for constr in self.constraints]
@@ -348,7 +348,7 @@ class MILPModel:
 
         self.cplex_model.linear_constraints.add(lin_expr = constr_linear_expr, senses = constr_sense, rhs = constr_rhs, names = constr_names)
 
-    def set_objective_function_to_cplex(self, objective_function: list, maximize: Optional[bool] = True):
+    def set_objective_function_to_cplex(self, objective_function: list, maximize: Optional[bool] = True) -> None:
         """Sets the objective function to the cplex model.
 
         Args:
@@ -358,7 +358,7 @@ class MILPModel:
         self.cplex_model.objective.set_linear(objective_function)
         self.cplex_model.objective.set_sense(self.cplex_model.objective.sense.maximize if maximize else self.cplex_model.objective.sense.minimize)
 
-    def build_model(self):
+    def build_model(self) -> None:
         """Builds the linear program by defining all the variables, constraints and objective function and adding them to the cplex model."""
         self.define_all_variables()
         self.define_all_constraints()
@@ -367,7 +367,7 @@ class MILPModel:
         self.set_constraints_to_cplex()
         self.set_objective_function_to_cplex(self.get_objective_function(), maximize=False)
 
-    def solve_model(self):
+    def solve_model(self) -> None:
         """Solves the linear program."""
         self.cplex_model.solve()
 
@@ -387,7 +387,7 @@ class MILPModel:
             drones_deployement.append(deployement_at_t)
         return drones_deployement
 
-    def cplex_finish(self):
+    def cplex_finish(self) -> None:
         """Closes the cplex model."""
         self.cplex_model.end()
 
@@ -395,7 +395,7 @@ class MILPModel:
         """Returns the value of the objective function."""
         return self.cplex_model.solution.get_objective_value()
 
-    def cplex_save_solution(self, file_name: str):
+    def cplex_save_solution(self, file_name: str) -> None:
         """Saves the solution of the linear program to a file.
 
         Args:
