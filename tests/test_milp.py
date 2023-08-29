@@ -2,6 +2,7 @@ from fanet.setup.cplex_constants import *
 from fanet.milp_model import MilpModel
 from fanet.graph import Graph
 from fanet.targets_trace import TargetsTrace
+from fanet.setup.config import TESTS_OUTPUT_DIR
 import numpy as np
 import os
 this_dirctory = os.path.dirname(__file__)
@@ -132,6 +133,20 @@ def test_save_file() -> None:
     milp_model.model_shut_up()
     milp_model.build_model()
     milp_model.solve_model()
+
+    assert milp_model.cplex_model.solution.get_status() == OPTIMAL_SOLUTION
+    out_file = TESTS_OUTPUT_DIR  + "test_basic_0"
+    assert not os.path.exists(out_file)
+    milp_model.cplex_model.write(out_file + ".lp")
+    milp_model.cplex_save_solution(out_file + ".sol")
+    assert os.path.exists(out_file + ".sol")
+    os.remove(out_file + ".sol")
+    assert not os.path.exists(out_file + ".sol")
+    milp_model.save_solution(out_file + ".sol")
+    assert os.path.exists(out_file + ".sol")
+    os.remove(out_file + ".sol")
+    assert not os.path.exists(out_file + ".sol")
+    milp_model.cplex_finish()
 
 
 def test_movement_0() -> None:
