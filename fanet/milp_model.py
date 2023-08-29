@@ -32,11 +32,6 @@ class MilpModel:
 
         self.cplex_model = cplex.Cplex()
         self.cplex_model.set_problem_name(model_name)
-        if PARAMETERS["cplex_workmem_limit"] > 0:
-            self.cplex_model.parameters.workmem.set(PARAMETERS["cplex_workmem_limit"])
-        if PARAMETERS["cplex_time_limit"] > 0:
-            self.cplex_model.parameters.timelimit.set(PARAMETERS["cplex_time_limit"])
-
         self.variables = []
         self.constraints = []
 
