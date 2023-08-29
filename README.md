@@ -86,7 +86,7 @@ The parameters used are the following:
 | `beta`| normalization factor | float |
 | `area_size`| size of the square area in meters | float |
 | `n_positions`| number of axis splits to form the grid | list of integers |
-| `heights`| number of axis splits to form the grid | list of floats |
+| `heights`| possible heights for deployment positions| list of floats |
 | `base_station`| base station position | tuple of floats (x,y,h) |
 | `comm_range`| communication range in meters | float |
 | `coverage_angle`| coverage angle in radians | float |
