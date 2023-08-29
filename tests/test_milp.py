@@ -287,3 +287,57 @@ def test_variables_types() -> None:
                         assert milp_model.get_variable(milp_model.var_z_t_drone_p_q(t, drone, p, q))[
                             "type"] == BINARY_VARIABLE
 
+def test_solution_values_0():
+    """Solves the example_basic_0 with alpha = 0.5 and verifies if the objective value and the distance and energy costs agree.
+    """
+    targets_traces, graph, milp_model = example_basic_0()
+    milp_model.alpha = 0.5
+    milp_model.model_shut_up()
+    milp_model.build_model()
+    milp_model.solve_model()
+    assert milp_model.cplex_model.solution.get_status() == OPTIMAL_SOLUTION
+    assert round(milp_model.get_solution_distance(), 5) == 142.82857
+    milp_objective_value = round(milp_model.get_objective_value(),5)
+    milp_solution_distance = milp_model.get_solution_distance()
+    milp_solution_energy = milp_model.get_solution_energy()
+    print(f"milp_objective_value: {milp_objective_value}")
+    print(f"milp_solution_distance: {milp_solution_distance}")
+    print(f"milp_solution_energy: {milp_solution_energy}")
+    assert milp_objective_value == round(0.5*milp_solution_distance + 0.5*0.08095*milp_solution_energy,5)
+    milp_model.cplex_finish()
+
+def test_solution_values_1():
+    """Solves the example_movement_0 with alpha = 0.5 and verifies if the objective value and the distance and energy costs agree.
+    """
+    targets_traces, graph, milp_model = example_movement_0()
+    milp_model.alpha = 0.5
+    milp_model.model_shut_up()
+    milp_model.build_model()
+    milp_model.solve_model()
+    assert milp_model.cplex_model.solution.get_status() == OPTIMAL_SOLUTION
+    milp_objective_value = round(milp_model.get_objective_value(),5)
+    milp_solution_distance = milp_model.get_solution_distance()
+    milp_solution_energy = milp_model.get_solution_energy()
+    print(f"milp_objective_value: {milp_objective_value}")
+    print(f"milp_solution_distance: {milp_solution_distance}")
+    print(f"milp_solution_energy: {milp_solution_energy}")
+    assert milp_objective_value == round(0.5*milp_solution_distance + 0.5*0.08095*milp_solution_energy,5)
+    milp_model.cplex_finish()
+
+def test_solution_values_2():
+    """Solves the example_movement_2 with alpha = 0.5 and verifies if the objective value and the distance and energy costs agree.
+    """
+    targets_traces, graph, milp_model = example_movement_2()
+    milp_model.alpha = 0.5
+    milp_model.model_shut_up()
+    milp_model.build_model()
+    milp_model.solve_model()
+    assert milp_model.cplex_model.solution.get_status() == OPTIMAL_SOLUTION
+    milp_objective_value = round(milp_model.get_objective_value(),5)
+    milp_solution_distance = milp_model.get_solution_distance()
+    milp_solution_energy = milp_model.get_solution_energy()
+    print(f"milp_objective_value: {milp_objective_value}")
+    print(f"milp_solution_distance: {milp_solution_distance}")
+    print(f"milp_solution_energy: {milp_solution_energy}")
+    assert milp_objective_value == round(0.5*milp_solution_distance + 0.5*0.08095*milp_solution_energy,5)
+    milp_model.cplex_finish()
