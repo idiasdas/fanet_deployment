@@ -461,28 +461,28 @@ class MilpModel:
         if self.get_solution_status() in [INFEASIBLE_SOLUTION, TIME_LIMIT_INFEASIBLE, MEMORY_LIMIT_INFEASIBLE]:
             return -1
 
-        distance = 0
+        total_distance = 0
         drones_deployement = self.get_drones_deployement()
         for drone in range(self.n_available_drones):
-            distance += self.input_graph.get_distance(self.input_graph.base_station, drones_deployement[0][drone]) # depoyement cost
-            distance += self.input_graph.get_distance(drones_deployement[self.observation_period-1][drone], self.input_graph.base_station) # return to base cost
+            total_distance += self.input_graph.get_distance(self.input_graph.base_station, drones_deployement[0][drone]) # depoyement cost
+            total_distance += self.input_graph.get_distance(drones_deployement[self.observation_period-1][drone], self.input_graph.base_station) # return to base cost
             for t in range(1, self.observation_period):
-                distance += self.input_graph.get_distance(drones_deployement[t-1][drone], drones_deployement[t][drone]) # movement cost
+                total_distance += self.input_graph.get_distance(drones_deployement[t-1][drone], drones_deployement[t][drone]) # movement cost
 
-        return distance
+        return total_distance
 
     def get_solution_energy(self) -> float:
         """Returns the energy consumed by the drones in the solution. If the solution was not reached, returns -1."""
         if self.get_solution_status() in [INFEASIBLE_SOLUTION, TIME_LIMIT_INFEASIBLE, MEMORY_LIMIT_INFEASIBLE]:
             return -1
 
-        energy = 0
+        total_energy = 0
         drones_deployement = self.get_drones_deployement()
         for drone in range(self.n_available_drones):
-            energy += energy(self.input_graph.get_distance(self.input_graph.base_station, drones_deployement[0][drone]), self.time_step_delta, False) # depoyement cost
-            energy += energy(self.input_graph.get_distance(drones_deployement[self.observation_period-1][drone], self.input_graph.base_station), self.time_step_delta, False) # return to base cost
+            total_energy += energy(self.input_graph.get_distance(self.input_graph.base_station, drones_deployement[0][drone]), self.time_step_delta, False) # depoyement cost
+            total_energy += energy(self.input_graph.get_distance(drones_deployement[self.observation_period-1][drone], self.input_graph.base_station), self.time_step_delta, False) # return to base cost
             for t in range(1, self.observation_period):
                 hover = False if (drones_deployement[t-1][drone] == self.input_graph.base_station or drones_deployement[t][drone] == self.input_graph.base_station) else True
-                energy += energy(self.input_graph.get_distance(drones_deployement[t-1][drone], drones_deployement[t][drone]), self.time_step_delta, hover=hover) # movement cost
+                total_energy += energy(self.input_graph.get_distance(drones_deployement[t-1][drone], drones_deployement[t][drone]), self.time_step_delta, hover=hover) # movement cost
 
-        return energy
+        return total_energy
