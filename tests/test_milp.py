@@ -220,23 +220,10 @@ def test_sensor_coverage_0() -> None:
     """For this example, we have 2 sensors for 2 time steps. The first one stays at (25,50) and the second one at (75,50). Even though both drone can communicate directly with the base station (comm_range = 100). Both must be deployed to cover the sensors.
 
     """
-    targets_trace = TargetsTrace(n_targets=2, observation_period=2)
-    targets_trace.trace_set = [[(25, 50), (25, 50)], [(75, 50), (75, 50)]]
-    graph = Graph(100, [10], (0, 0, 0), 1, 100, np.tan(np.pi/6))
-    graph.deployment_positions = [(25, 50, 10), (75, 50, 10)]
-    milp_model = MilpModel(n_available_drones=2,
-                           observation_period=2,
-                           time_step_delta=1,
-                           targets_trace=targets_trace,
-                           input_graph=graph,
-                           alpha=0,
-                           beta=0)
-
+    targets_trace, graph, milp_model = example_sensor_coverage_0()
     milp_model.model_shut_up()
-
     milp_model.build_model()
     milp_model.solve_model()
-
     assert milp_model.cplex_model.solution.get_status() == OPTIMAL_SOLUTION
     assert round(milp_model.get_objective_value(), 5) == 294.96174
     milp_model.cplex_finish()
@@ -245,23 +232,11 @@ def test_sensor_coverage_0() -> None:
 def test_sensor_coverage_1() -> None:
     """For this example, we have 2 sensors for 2 time steps. The first one stays at (25,50) and the second one at (75,50). But only one drone. So the solution is infeasible.
     """
-    targets_trace = TargetsTrace(n_targets=2, observation_period=2)
-    targets_trace.trace_set = [[(25, 50), (25, 50)], [(75, 50), (75, 50)]]
-    graph = Graph(100, [10], (0, 0, 0), 1, 100, np.tan(np.pi/6))
-    graph.deployment_positions = [(25, 50, 10), (75, 50, 10)]
-    milp_model = MilpModel(n_available_drones=1,
-                           observation_period=2,
-                           time_step_delta=1,
-                           targets_trace=targets_trace,
-                           input_graph=graph,
-                           alpha=0,
-                           beta=0)
-
+    targets_trace, graph, milp_model = example_sensor_coverage_0()
+    milp_model.n_available_drones = 1
     milp_model.model_shut_up()
-
     milp_model.build_model()
     milp_model.solve_model()
-
     assert milp_model.cplex_model.solution.get_status() == INFEASIBLE_SOLUTION
     assert milp_model.get_objective_value() == -1
     milp_model.cplex_finish()
@@ -270,33 +245,18 @@ def test_sensor_coverage_1() -> None:
 def test_variables_types() -> None:
     """Tests if variables defined to cplex have the correct type.
     """
-    observation_period = 2
-    n_available_drones = 1
-    targets_trace = TargetsTrace(
-        n_targets=2, observation_period=observation_period)
-    targets_trace.trace_set = [[(25, 50), (25, 50)], [(75, 50), (75, 50)]]
-    graph = Graph(100, [10], (0, 0, 0), 1, 100, np.tan(np.pi/6))
-    graph.deployment_positions = [(25, 50, 10), (75, 50, 10)]
-    milp_model = MilpModel(n_available_drones=1,
-                           observation_period=2,
-                           time_step_delta=1,
-                           targets_trace=targets_trace,
-                           input_graph=graph,
-                           alpha=0,
-                           beta=0)
-
+    targets_trace, graph, milp_model = example_sensor_coverage_0()
     milp_model.model_shut_up()
-
     milp_model.build_model()
     # Testing the variables z_t_p for all t \in T and p \in P \cup {base_station}
-    for t in range(observation_period):
+    for t in range(milp_model.observation_period):
         for p in graph.deployment_positions:
             assert milp_model.get_variable(milp_model.var_z_t_p(t, p))[
                 "type"] == BINARY_VARIABLE
 
     # Testing the variables z_t_drone_p for all t \in T, drone \in n_available_drones and p \in P \cup {base_station}
-    for t in range(observation_period):
-        for drone in range(n_available_drones):
+    for t in range(milp_model.observation_period):
+        for drone in range(milp_model.n_available_drones):
             assert milp_model.get_variable(milp_model.var_z_t_drone_p(
                 t, drone, graph.base_station))["type"] == BINARY_VARIABLE
             for p in graph.deployment_positions:
@@ -304,14 +264,14 @@ def test_variables_types() -> None:
                     "type"] == BINARY_VARIABLE
 
     # Testing the flow variables f_t_p_q for all t \in T, p,q \in P and p \neq q
-    for t in range(observation_period):
+    for t in range(milp_model.observation_period):
         for p in graph.deployment_positions + [graph.base_station]:
             for q in graph.get_positions_in_comm_range(p):
                 assert milp_model.get_variable(milp_model.var_f_t_p_q(t, p, q))[
                     "type"] == CONTINUOUS_VARIABLE
 
     # Testing the flow variables f_t_p_q for all t \in T, sensor_position \in trace_set and delpoyment_position \in P that covers the sensor_position
-    for t in range(observation_period):
+    for t in range(milp_model.observation_period):
         for sensor_trace in targets_trace.trace_set:
             sensor_position = sensor_trace[t]
             for deployment_position in graph.get_target_coverage(sensor_position):
@@ -319,10 +279,11 @@ def test_variables_types() -> None:
                     t, deployment_position, sensor_position))["type"] == CONTINUOUS_VARIABLE
 
     # Testing the variables z_t_drone_p_q for all t \in T, drone \in n_available_drones, p,q \in P and p \neq q
-    if observation_period > 1:  # Otherwise there are no drone movements within the observation period
-        for t in range(observation_period):
-            for drone in range(n_available_drones):
+    if milp_model.observation_period > 1:  # Otherwise there are no drone movements within the observation period
+        for t in range(milp_model.observation_period):
+            for drone in range(milp_model.n_available_drones):
                 for p in graph.deployment_positions + [graph.base_station]:
                     for q in graph.deployment_positions + [graph.base_station]:
                         assert milp_model.get_variable(milp_model.var_z_t_drone_p_q(t, drone, p, q))[
                             "type"] == BINARY_VARIABLE
+
