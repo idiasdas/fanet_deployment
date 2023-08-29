@@ -429,6 +429,10 @@ class MilpModel:
         """Returns the status of the solution. Use the constants defined in cplex_constants.py."""
         return self.cplex_model.solution.get_status()
 
+    def get_solution_status_string(self) -> str:
+        """Returns the status of the solution as a string."""
+        return self.cplex_model.solution.get_status_string()
+
     def set_time_limit(self, time_limit: float) -> None:
         """Sets the time limit parameter of cplex.
 
