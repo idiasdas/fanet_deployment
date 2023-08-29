@@ -451,3 +451,18 @@ class MilpModel:
         if memory_limit > 0:
             self.cplex_model.parameters.workmem.set(memory_limit)
 
+    def get_solution_distance(self) -> float:
+        """Returns the distance traveled by the drones in the solution. If the solution was not reached, returns -1."""
+        if self.get_solution_status() in [INFEASIBLE_SOLUTION, TIME_LIMIT_INFEASIBLE, MEMORY_LIMIT_INFEASIBLE]:
+            return -1
+
+        distance = 0
+        drones_deployement = self.get_drones_deployement()
+        for drone in range(self.n_available_drones):
+            distance += self.input_graph.get_distance(self.input_graph.base_station,drones_deployement[0][drone]) # depoyement cost
+            distance += self.input_graph.get_distance(drones_deployement[self.observation_period-1][drone],self.input_graph.base_station) # return to base cost
+            for t in range(1,self.observation_period):
+                distance += self.input_graph.get_distance(drones_deployement[t-1][drone],drones_deployement[t][drone]) # movement cost
+
+        return distance
+
