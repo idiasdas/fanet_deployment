@@ -428,3 +428,22 @@ class MilpModel:
     def get_solution_status(self) -> int:
         """Returns the status of the solution. Use the constants defined in cplex_constants.py."""
         return self.cplex_model.solution.get_status()
+
+    def set_time_limit(self, time_limit: float) -> None:
+        """Sets the time limit parameter of cplex.
+
+        Args:
+            time_limit: Limit in seconds before stopping the execution of cplex.
+        """
+        if time_limit > 0:
+            self.cplex_model.parameters.timelimit.set(time_limit)
+
+    def set_memory_limit(self, memory_limit: float) -> None:
+        """Sets the memory limit parameter of cplex.
+
+        Args:
+            memory_limit: Limit in MB of the working memory before stopping the execution of cplex.
+        """
+        if memory_limit > 0:
+            self.cplex_model.parameters.workmem.set(memory_limit)
+
