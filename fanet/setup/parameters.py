@@ -59,3 +59,23 @@ TEST_PARAMETERS = {
     "cplex_time_limit": 10,
     "experiment_name": "test",
 }
+
+EXPERIMENT_PARAMETERS = {
+    "n_drones": [5, 10],
+    "n_targets": [10, 20, 30, 40, 50],
+    "targets_speed": [10],
+    "observation_period": 5,
+    "time_step_delta": 1,
+    "alpha": [0, 0.5, 1],
+    "beta": 0.08095,
+    "area_size": 100,
+    "n_positions": [3],
+    "heights": [45],
+    "base_station": (0, 0, 0),
+    "comm_range": 60,
+    "coverage_angle": np.pi/6,
+    "n_instances": 10,
+    "cplex_workmem_limit": 10000,
+    "cplex_time_limit": 3600,
+    "experiment_name": "exp",
+}
