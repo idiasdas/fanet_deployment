@@ -296,29 +296,34 @@ class MilpModel:
         """
         obj_func = LinearExpression()
 
-        # Deployement cost
-        for p in self.input_graph.deployment_positions:
-            obj_func.add_term(self.input_graph.get_distance(p, self.input_graph.base_station), self.var_z_t_p(0, p))
 
-        # Return to base cost
         for p in self.input_graph.deployment_positions:
-            obj_func.add_term(self.input_graph.get_distance(p, self.input_graph.base_station), self.var_z_t_p(self.observation_period-1, p))
+            # Deployement cost (t = 0)
+            energy_consumed = energy(self.input_graph.get_distance(p, self.input_graph.base_station), self.time_step_delta, False)
+            distance_cost = (1 - self.alpha) * self.input_graph.get_distance(p, self.input_graph.base_station)
+            energy_cost = self.alpha * self.beta * energy_consumed
+            obj_func.add_term(distance_cost + energy_cost, self.var_z_t_p(0, p))
+            # Return to base cost (t = T - 1)
+            energy_consumed = energy(self.input_graph.get_distance(p, self.input_graph.base_station), self.time_step_delta, False)
+            distance_cost = (1 - self.alpha) * self.input_graph.get_distance(p, self.input_graph.base_station)
+            energy_cost = self.alpha * self.beta * energy_consumed
+            obj_func.add_term(distance_cost + energy_cost, self.var_z_t_p(self.observation_period - 1, p))
 
         if self.observation_period == 1: # In this case the deployement and return costs use the same variable
             obj_func.merge_duplicates()  # So we merge them into one term
-        else:                            # If we have more than one time step then the drones can move within the observation period
-            # Movement cost
-            for t in range(self.observation_period):
-                for drone in range(self.n_available_drones):
-                    for p in self.input_graph.deployment_positions + [self.input_graph.base_station]:
-                        for q in self.input_graph.deployment_positions + [self.input_graph.base_station]:
-                            hover = False if (p == self.input_graph.base_station or q == self.input_graph.base_station) else True
-                            energy_consumed = energy(self.input_graph.get_distance(p, q), self.time_step_delta, hover)
 
-                            distance_cost = (1 - self.alpha) * self.input_graph.get_distance(p, q)
-                            energy_cost = self.alpha * self.beta * energy_consumed
+        # Movement cost
+        for t in range(1,self.observation_period):
+            for drone in range(self.n_available_drones):
+                for p in self.input_graph.deployment_positions + [self.input_graph.base_station]:
+                    for q in self.input_graph.deployment_positions + [self.input_graph.base_station]:
+                        hover = False if (p == self.input_graph.base_station or q == self.input_graph.base_station) else True
+                        energy_consumed = energy(self.input_graph.get_distance(p, q), self.time_step_delta, hover)
 
-                            obj_func.add_term(distance_cost + energy_cost, self.var_z_t_drone_p_q(t, drone, p, q))
+                        distance_cost = (1 - self.alpha) * self.input_graph.get_distance(p, q)
+                        energy_cost = self.alpha * self.beta * energy_consumed
+
+                        obj_func.add_term(distance_cost + energy_cost, self.var_z_t_drone_p_q(t, drone, p, q))
 
         return obj_func.get_tuple_expression() # For some reason cplex API doesn't use the notation of linear expressions for constraints and objective function. Instead it uses a list of tuples with the form (variable_name (str), coefficient (float)).
 
