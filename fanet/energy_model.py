@@ -16,12 +16,12 @@ def Power(v:float) -> float:
     delta = 0.012  # Profile drag coefficient
 
     # Constants that define power to hover
-    P_0 = delta*p*s*A*np.power(omega , 3)*np.power(R , 3)/8
-    P_i = (1 + k)*np.power(W , 1.5)/(np.sqrt(2*p*A))
+    P_0 = delta*p*s*A*np.power(omega, 3)*np.power(R, 3)/8
+    P_i = (1 + k)*np.power(W, 1.5)/(np.sqrt(2*p*A))
 
     # Power consumption
-    blade_profile = P_0*(1 + 3*np.power(v , 2)/np.power(Utip , 2))
-    induced = P_i*np.sqrt((np.sqrt(1 + np.power(v , 4)/(4*np.power(v_0 , 4))) - np.power(v , 2)/(2*np.power(v_0 , 2))))
+    blade_profile = P_0*(1 + 3*np.power(v, 2)/np.power(Utip, 2))
+    induced = P_i*np.sqrt((np.sqrt(1 + np.power(v, 4)/(4*np.power(v_0, 4))) - np.power(v, 2)/(2*np.power(v_0, 2))))
     parasite = 0.5*d_0*p*s*A*np.power(v,3)
 
     return blade_profile + induced + parasite
