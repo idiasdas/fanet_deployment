@@ -77,23 +77,23 @@ The directory `/fanet_deployment/fanet/setup/` constains the main configuration 
 The parameters used are the following:
 | PARAMETER | DESCRIPTION | TYPE |
 | --------- | ----------- | ---- |
-| `n_drones`| number of available drones | list of integers |
-| `n_targets`| number of targets | list of integers |
-| `targets_speed`| speed of the targets in m/s | list of floats |
-| `observation_period`| number of time steps | integer |
-| `time_step_delta`| time between each time step in seconds | float |
-| `alpha`| weight between distance and energy | list of floats |
-| `beta`| normalization factor | float |
-| `area_size`| size of the square area in meters | float |
-| `n_positions`| number of axis splits to form the grid | list of integers |
-| `heights`| possible heights for deployment positions| list of floats |
-| `base_station`| base station position | tuple of floats (x,y,h) |
-| `comm_range`| communication range in meters | float |
-| `coverage_angle`| coverage angle in radians | float |
-| `n_instances`| number of instances to generate for each parameter combination | integer |
-| `cplex_workmem_limit`| cplex maximum memory in MB | integer |
-| `cplex_time_limit`| cplex maximum time in seconds | integer |
-| `experiment_name`| name of the experiment (becomes a folder in FILES_DIR with the results) | string |
+| n_drones | Number of available drones | List of integers |
+| n_targets | Number of targets | List of integers |
+| targets_speed | Speed of the targets in m/s | List of floats |
+| observation_period | Number of time steps | Integer |
+| time_step_delta | Time between each time step in seconds | Float |
+| alpha | Weight between distance and energy | List of floats |
+| beta | Normalization factor | Float |
+| area_size | Size of the square area in meters | Float |
+| n_positions | Number of axis splits to form the grid | List of integers |
+| heights | Possible heights for deployment positions| List of floats |
+| base_station | Base station position | Tuple of floats (x,y,h) |
+| comm_range | Communication range in meters | Float |
+| coverage_angle | Coverage angle in radians | Float |
+| n_instances | Number of instances to generate for each parameter combination | Integer |
+| cplex_workmem_limit | Cplex maximum memory in MB | Integer |
+| cplex_time_limit | Cplex maximum time in seconds | Integer |
+| experiment_name | Name of the experiment (becomes a folder in FILES_DIR with the results) | String |
 
 **If you make any changes to these files, run the tests again** to ensure they are valid. Keep in mind the tests only verify the dictionary referenced by PARAMETERS in `config.py`.
 
