@@ -170,17 +170,8 @@ def test_movement_2() -> None:
 
 def test_idle_drones_0() -> None:
     """"We repeat test_movement_0, but now we have 10 drones available. So we expect the same solution, but with 9 idle drones."""
-    targets_trace = TargetsTrace(n_targets=1, observation_period=2)
-    targets_trace.trace_set = [[(25, 50), (75, 50)]]
-    graph = Graph(100, [10], (0, 0, 0), 1, 100, np.tan(np.pi/6))
-    graph.deployment_positions = [(25, 50, 10), (75, 50, 10)]
-    milp_model = MilpModel(n_available_drones=10,
-                           observation_period=2,
-                           time_step_delta=1,
-                           targets_trace=targets_trace,
-                           input_graph=graph,
-                           alpha=0,
-                           beta=0)
+    targets_trace, graph, milp_model = example_movement_0()
+    milp_model.n_available_drones = 10
 
     milp_model.model_shut_up()
     milp_model.build_model()
@@ -190,9 +181,13 @@ def test_idle_drones_0() -> None:
     assert round(milp_model.get_objective_value(), 5) == 197.48087
 
     deployement = milp_model.get_drones_deployement()
+    drones_at_base_station = 0
     for t in range(2):
         for drone in range(10):
-            assert len(deployement[t][drone]) == len(graph.base_station)
+            if deployement[t][drone] == graph.base_station:
+                drones_at_base_station += 1
+        assert drones_at_base_station == 9
+        drones_at_base_station = 0
     milp_model.cplex_finish()
 
 
