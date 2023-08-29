@@ -205,7 +205,7 @@ def test_uncoverable_sensor_0() -> None:
                            targets_trace=targets_trace,
                            input_graph=graph,
                            alpha=0,
-                           beta=0)
+                           beta=0.08095)
 
     milp_model.model_shut_up()
     milp_model.build_model()
