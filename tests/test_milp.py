@@ -74,7 +74,7 @@ def example_movement_1() -> list:
     return [targets_trace, graph, milp_model]
 
 def example_movement_2() -> list:
-    """In this example, we have two time steps, where the sensor moves from (25,50,0) to (75,50,0). So the drone is expected to go to move between time steps. Unlike test_movement_0, we have only 60m of communication range but 2 drones available."""
+    """In this example, we have two time steps, where the sensor moves from (25,50,0) to (75,50,0). So the drone is expected to go to move between time steps. Unlike test_movement_0, we have only 60m of communication range but 2 drones available so the problem is feasible."""
     targets_trace = TargetsTrace(n_targets=1, observation_period=2)
     targets_trace.trace_set = [[(25, 50), (75, 50)]]
     graph = Graph(100, [10], (0, 0, 0), 1, 60, np.tan(np.pi/6))
