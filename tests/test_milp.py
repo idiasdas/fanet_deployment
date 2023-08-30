@@ -358,3 +358,30 @@ def test_solution_values_2():
     print(f"milp_solution_energy: {milp_solution_energy}")
     assert milp_objective_value == round(0.5*milp_solution_distance + 0.5*0.08095*milp_solution_energy,5)
     milp_model.cplex_finish()
+
+def test_solution_status_0():
+    """Verifies solution status string.
+    """
+    targets_traces, graph, milp_model = example_movement_2()
+    milp_model.alpha = 0.5
+    milp_model.model_shut_up()
+    milp_model.build_model()
+    milp_model.solve_model()
+    assert milp_model.cplex_model.solution.get_status() == OPTIMAL_SOLUTION
+    assert milp_model.get_solution_status_string() == "integer optimal solution"
+    milp_model.cplex_finish()
+
+def test_parameters_methods():
+    """Tests if the parameters methods are working properly.
+    """
+    targets_traces, graph, milp_model = example_movement_2()
+    default_time_milit = milp_model.cplex_model.parameters.timelimit.get()
+    default_memory_milit = milp_model.cplex_model.parameters.workmem.get()
+    milp_model.set_time_limit(100)
+    milp_model.set_memory_limit(100)
+    assert milp_model.cplex_model.parameters.timelimit.get() == 100
+    assert milp_model.cplex_model.parameters.workmem.get() == 100
+    milp_model.cplex_model.parameters.timelimit.reset()
+    milp_model.cplex_model.parameters.workmem.reset()
+    assert milp_model.cplex_model.parameters.timelimit.get() == default_time_milit
+    assert milp_model.cplex_model.parameters.workmem.get() == default_memory_milit
