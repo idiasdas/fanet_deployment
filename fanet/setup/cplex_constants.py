@@ -1,4 +1,5 @@
 # IF FOR SOME REASON THEY CHANGE THE DEFINITION OF THE CONSTANTS IN THE CPLEX MODULE, WE CAN CHANGE THEM HERE
+# https://www.ibm.com/docs/en/icos/20.1.0?topic=micclcarm-solution-status-codes-by-number-in-cplex-callable-library-c-api
 # Constants for variables type
 BINARY_VARIABLE = "B"
 INTEGER_VARIABLE = "I"
@@ -15,3 +16,4 @@ TIME_LIMIT_FEASIBLE = 107
 TIME_LIMIT_INFEASIBLE = 108
 MEMORY_LIMIT_FEASIBLE = 111
 MEMORY_LIMIT_INFEASIBLE = 112
+ABORTED_FEASIBLE = 113
