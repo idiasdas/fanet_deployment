@@ -389,9 +389,9 @@ class MilpModel:
 
     def get_objective_value(self) -> float:
         """Returns the value of the objective function. In case of infeasible solution, returns -1."""
-        if self.cplex_model.solution.get_status() in [INFEASIBLE_SOLUTION, TIME_LIMIT_INFEASIBLE, MEMORY_LIMIT_INFEASIBLE]:
-            return -1
-        return self.cplex_model.solution.get_objective_value()
+        if self.cplex_model.solution.get_status() in [OPTIMAL_SOLUTION, OPTIMAL_TOL_SOLUTION, ABORTED_FEASIBLE, TIME_LIMIT_FEASIBLE, MEMORY_LIMIT_FEASIBLE]:
+            return self.cplex_model.solution.get_objective_value()
+        return -1
 
     def cplex_save_solution(self, file_name: str) -> None:
         """Saves the solution of the linear program to a file using cplex method. Constains too much information.
@@ -457,7 +457,7 @@ class MilpModel:
 
     def get_solution_distance(self) -> float:
         """Returns the distance traveled by the drones in the solution. If the solution was not reached, returns -1."""
-        if self.get_solution_status() in [INFEASIBLE_SOLUTION, TIME_LIMIT_INFEASIBLE, MEMORY_LIMIT_INFEASIBLE]:
+        if not self.cplex_model.solution.get_status() in [OPTIMAL_SOLUTION, OPTIMAL_TOL_SOLUTION, ABORTED_FEASIBLE, TIME_LIMIT_FEASIBLE, MEMORY_LIMIT_FEASIBLE]:
             return -1
 
         total_distance = 0
@@ -472,7 +472,7 @@ class MilpModel:
 
     def get_solution_energy(self) -> float:
         """Returns the energy consumed by the drones in the solution. If the solution was not reached, returns -1."""
-        if self.get_solution_status() in [INFEASIBLE_SOLUTION, TIME_LIMIT_INFEASIBLE, MEMORY_LIMIT_INFEASIBLE]:
+        if not self.cplex_model.solution.get_status() in [OPTIMAL_SOLUTION, OPTIMAL_TOL_SOLUTION, ABORTED_FEASIBLE, TIME_LIMIT_FEASIBLE, MEMORY_LIMIT_FEASIBLE]:
             return -1
 
         total_energy = 0
