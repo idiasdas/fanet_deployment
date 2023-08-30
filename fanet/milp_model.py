@@ -414,6 +414,8 @@ class MilpModel:
         file = open(file_name, "w")
         file.write(f"{'Solution status:':<30} {self.get_solution_status()}\n")
         file.write(f"{'Objective function value:':<30} {self.get_objective_value()}\n")
+        file.write(f"{'Total Distance:':<30} {self.get_solution_distance()}\n")
+        file.write(f"{'Total Energy:':<30} {self.get_solution_energy()}\n")
         file.write(f"{'Time to reach the solution:':<30} {self.solution_time}\n")
         file.write(f"{'Drones deployment:':<30}\n")
         file.write("-------------------------------------------\n")
