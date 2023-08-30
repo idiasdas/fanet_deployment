@@ -296,7 +296,6 @@ class MilpModel:
         """
         obj_func = LinearExpression()
 
-
         for p in self.input_graph.deployment_positions:
             # Deployement cost (t = 0)
             energy_consumed = energy(self.input_graph.get_distance(p, self.input_graph.base_station), self.time_step_delta, False)
