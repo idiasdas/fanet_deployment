@@ -1,8 +1,8 @@
 import os
-from fanet.setup.parameters import DEFAULT_PARAMETERS, TEST_PARAMETERS
+from fanet.setup.parameters import DEFAULT_PARAMETERS, TEST_PARAMETERS, TEST_TIME_LIMIT, EXPERIMENT_PARAMETERS
 
 # Parameters used in the project.
-PARAMETERS = TEST_PARAMETERS
+PARAMETERS = EXPERIMENT_PARAMETERS
 # Path to the root directory of the project
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__))) + "/"
 # Path where tests results are stored
