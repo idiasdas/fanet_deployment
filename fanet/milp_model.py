@@ -311,20 +311,17 @@ class MilpModel:
 
         if self.observation_period == 1: # In this case the deployement and return costs use the same variable
             obj_func.merge_duplicates()  # So we merge them into one term
-
+            return obj_func.get_tuple_expression()
         # Movement cost
-        for t in range(1,self.observation_period):
-            for drone in range(self.n_available_drones):
-                for p in self.input_graph.deployment_positions + [self.input_graph.base_station]:
-                    for q in self.input_graph.deployment_positions + [self.input_graph.base_station]:
-                        hover = False if (p == self.input_graph.base_station or q == self.input_graph.base_station) else True
-                        energy_consumed = energy(self.input_graph.get_distance(p, q), self.time_step_delta, hover)
-
-                        distance_cost = (1 - self.alpha) * self.input_graph.get_distance(p, q)
-                        energy_cost = self.alpha * self.beta * energy_consumed
-
+        for p in self.input_graph.deployment_positions + [self.input_graph.base_station]:
+            for q in self.input_graph.deployment_positions + [self.input_graph.base_station]:
+                hover = False if (p == self.input_graph.base_station or q == self.input_graph.base_station) else True
+                energy_consumed = energy(self.input_graph.get_distance(p, q), self.time_step_delta, hover)
+                distance_cost = (1 - self.alpha) * self.input_graph.get_distance(p, q)
+                energy_cost = self.alpha * self.beta * energy_consumed
+                for t in range(1,self.observation_period):
+                    for drone in range(self.n_available_drones):
                         obj_func.add_term(distance_cost + energy_cost, self.var_z_t_drone_p_q(t, drone, p, q))
-
         return obj_func.get_tuple_expression() # For some reason cplex API doesn't use the notation of linear expressions for constraints and objective function. Instead it uses a list of tuples with the form (variable_name (str), coefficient (float)).
 
     def set_variables_to_cplex(self) -> None:
