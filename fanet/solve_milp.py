@@ -19,6 +19,8 @@ def run_milp_model(n_targets: int, n_drones: int, target_speed: float, instance:
                         input_graph=graph,
                         alpha=alpha,
                         beta = PARAMETERS["beta"])
+    model.set_time_limit(PARAMETERS["time_limit"])
+    model.set_memory_limit(PARAMETERS["memory_limit"])
     model.build_model()
     model.solve_model()
     solution = model.get_objective_value()
