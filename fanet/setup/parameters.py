@@ -69,7 +69,7 @@ EXPERIMENT_PARAMETERS = {
     "alpha": [0, 0.5, 1],
     "beta": 0.08095,
     "area_size": 100,
-    "n_positions": [3],
+    "n_positions": [3,4,5],
     "heights": [45],
     "base_station": (0, 0, 0),
     "comm_range": 60,
