@@ -12,7 +12,7 @@ def run_milp_model(n_targets: int, n_drones: int, target_speed: float, instance:
         return 0
     trace_file = FILES_DIR+f"traces/trace_nt_{n_targets}_t_{PARAMETERS['observation_period']}_v_{target_speed}_i_{n}.txt"
     trace = TargetsTrace(load_file=trace_file)
-    model = MilpModel(n_available_drones=2*n_drones,
+    model = MilpModel(n_available_drones=n_drones,
                         observation_period=PARAMETERS["observation_period"],
                         time_step_delta=PARAMETERS["time_step_delta"],
                         targets_trace=trace,
