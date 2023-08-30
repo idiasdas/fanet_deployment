@@ -77,7 +77,7 @@ EXPERIMENT_PARAMETERS = {
     "n_instances": 10,
     "cplex_workmem_limit": 10000,
     "cplex_time_limit": 3600,
-    "experiment_name": "exp",
+    "experiment_name": "experiment_0",
 }
 
 TEST_TIME_LIMIT = {
@@ -97,5 +97,5 @@ TEST_TIME_LIMIT = {
     "n_instances": 10,
     "cplex_workmem_limit": 10000,
     "cplex_time_limit": 300,
-    "experiment_name": "exp",
+    "experiment_name": "test_time_limit",
 }
