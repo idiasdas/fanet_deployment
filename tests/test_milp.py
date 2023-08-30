@@ -169,6 +169,8 @@ def test_movement_1() -> None:
     milp_model.solve_model()
     assert milp_model.cplex_model.solution.get_status() == INFEASIBLE_SOLUTION
     assert milp_model.get_objective_value() == -1
+    assert milp_model.get_solution_distance() == -1
+    assert milp_model.get_solution_energy() == -1
     milp_model.cplex_finish()
 
 
