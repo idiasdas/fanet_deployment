@@ -408,19 +408,20 @@ class MilpModel:
         Args:
             file_name (str): Name of the file to save the solution.
         """
-        file = open(file_name, "w")
-        file.write(f"{'Solution status:':<30} {self.get_solution_status()}\n")
-        file.write(f"{'Objective function value:':<30} {self.get_objective_value()}\n")
-        file.write(f"{'Total Distance:':<30} {self.get_solution_distance()}\n")
-        file.write(f"{'Total Energy:':<30} {self.get_solution_energy()}\n")
-        file.write(f"{'Time to reach the solution:':<30} {self.solution_time}\n")
-        file.write(f"{'Drones deployment:':<30}\n")
-        file.write("-------------------------------------------\n")
-        drones_deployement = self.get_drones_deployement()
-        file.write(f"{'time_step:':<15} {'drone:':<11} {'position:':}\n")
-        for time_step in range(len(drones_deployement)):
-            for drone in range(len(drones_deployement[time_step])):
-                file.write(f"{time_step:<15} {drone:<11} {drones_deployement[time_step][drone]}\n")
+        with open(file_name, "w") as file:
+            file.write(f"{'Solution status:':<30} {self.get_solution_status()}\n")
+            file.write(f"{'Objective function value:':<30} {self.get_objective_value()}\n")
+            file.write(f"{'Total Distance:':<30} {self.get_solution_distance()}\n")
+            file.write(f"{'Total Energy:':<30} {self.get_solution_energy()}\n")
+            file.write(f"{'Time to reach the solution:':<30} {self.solution_time}\n")
+            if self.cplex_model.solution.get_status() in [OPTIMAL_SOLUTION, OPTIMAL_TOL_SOLUTION, ABORTED_FEASIBLE, TIME_LIMIT_FEASIBLE, MEMORY_LIMIT_FEASIBLE]:
+                file.write(f"{'Drones deployment:':<30}\n")
+                file.write("-------------------------------------------\n")
+                drones_deployement = self.get_drones_deployement()
+                file.write(f"{'time_step:':<15} {'drone:':<11} {'position:':}\n")
+                for time_step in range(len(drones_deployement)):
+                    for drone in range(len(drones_deployement[time_step])):
+                        file.write(f"{time_step:<15} {drone:<11} {drones_deployement[time_step][drone]}\n")
 
     def model_shut_up(self) -> None:
         """Disables cplex output stream."""
