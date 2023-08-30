@@ -377,7 +377,7 @@ class MilpModel:
             deployement_at_t = []
             for drone in range(self.n_available_drones):
                 for p in self.input_graph.deployment_positions + [self.input_graph.base_station]:
-                    if self.cplex_model.solution.get_values(self.var_z_t_drone_p(t, drone, p)) == 1:
+                    if self.cplex_model.solution.get_values(self.var_z_t_drone_p(t, drone, p)) >= 0.9:
                         deployement_at_t.append(p)
             drones_deployement.append(deployement_at_t)
         return drones_deployement
