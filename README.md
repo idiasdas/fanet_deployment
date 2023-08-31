@@ -1,4 +1,4 @@
-# Optimizing drones trajectory to form a flying network
+# Optimizing drone trajectories to form flying networks
 
 This project is a remake of the works presented on:
 
@@ -6,18 +6,18 @@ This project is a remake of the works presented on:
 
 * I. Dias Da Silva and C. Caillouet, "Optimizing the trajectory of drones: trade-off between distance and energy", in 2nd International Workshop on Internet of Autonomous Unmanned Vehicles (IAUV) in conjunction with IEEE SECON 2020, Como, Italy, Jun. 2020.  [(IEEE-9149781)](https://ieeexplore.ieee.org/abstract/document/9149781)
 
-Below you will find the instructions to replicate our experiments. If you run into any problems or have any questions about this projet (papers, code or whatever), do not exitate to contact me directly on [igor.dias-da-silva@inria.fr](mailto:igor.dias-da-silva.inria.fr).
+Below you will find the instructions to replicate our experiments. If you run into any problems or have any questions about this project (papers, code or whatever), do not hesitate to contact me directly at [igor.dias-da-silva@inria.fr](mailto:igor.dias-da-silva.inria.fr).
 
 ## REQUIREMENTS
 
-For this project you will need:
-- **Python 3.7**: This project requires Python 3.7 specifically because of cplex.
-    - If you don't have python 3.7 installed, please [download and install it](https://www.python.org/downloads/release/python-3716/) first.
-    - I'm not sure about newer versions of cplex, but I used version 1210 and the API doesn't work with newer versions of python.
+For this project, you will need the following:
+- **Python 3.7**: This project requires Python 3.7 specifically because of CPLEX.
+    - If you don't have Python 3.7 installed, please [download and install it](https://www.python.org/downloads/release/python-3716/) first.
+    - I'm not sure about newer versions of CPLEX, but I used version 1210, and the API doesn't work with newer python versions.
 - **CPLEX**: Ensure that CPLEX is properly installed and accessible via Python:
     - [Download and install it](https://www.ibm.com/docs/en/icos/20.1.0?topic=cplex-installing).
     - [Set the environment variable PYTHONPATH](https://www.ibm.com/docs/en/icos/20.1.0?topic=cplex-setting-up-python-api).
-    - Below you can find how to verify if cplex is properly installed using the makefile.
+    - Below, you can see how to verify if CPLEX is properly installed using the makefile.
 
 ## SETUP
 
@@ -36,13 +36,13 @@ Run the following command to create a conda environment named `fanet` with the r
 ```bash
 make setup-conda
 ```
-Whenever you are working on this project, ensure that you are using one these two virtual environments. Use the following command to activate `venv fanet`:
+Whenever you are working on this project, ensure that you are using one of these two virtual environments. Use the following command to activate `venv fanet`:
 
 ```bash
 . fanet/bin/activate
 ```
 
-The followig command activates the conda environment `fanet`:
+The following command activates the conda environment `fanet`:
 
 ```bash
 conda activate fanet
@@ -55,7 +55,7 @@ make check-cplex
 ```
 
 ## TESTS
-This project uses `PyTest` and all tests can be found in `fanet_deployment/tests/`. If you wish to run these tests, use:
+This project uses `PyTest`, and all tests can be found in `fanet_deployment/tests/`. If you wish to run these tests, use:
 
 ```bash
 make test
@@ -69,10 +69,10 @@ make test-cov
 
 ## CONFIGURATION
 
-The directory `/fanet_deployment/fanet/setup/` constains the main configuration files which are:
-- `config.py`: Defines TESTS_OUTPUT_DIR and FILES_DIR which determine where the tests outputs and the models results are saved. It also defines PARAMETERS, a dictionary with all relevant information used by the models.
-- `parameters.py`: By default, PARAMETERS = DEFAULT_PARAMETERS which are defined here. Use this file to define your own parameters dictionaries and then set PARAMETERS accordingly in `config.py`.
-- `cplex_constants`: This files constains constants used in cplex module to determine variables types, constraints senses and objective status. I have defined them here so that any changes to these values can be quickly applied to the project. Although these are very unlikely.
+The directory `/fanet_deployment/fanet/setup/` contains the main configuration files, which are:
+- `config.py`: Defines TESTS_OUTPUT_DIR and FILES_DIR, which determine where the test outputs and the model results are saved. It also defines PARAMETERS, a dictionary with all relevant information the models use.
+- `parameters.py`: By default, PARAMETERS = DEFAULT_PARAMETERS, which are defined here. Use this file to define your own parameters dictionaries and then set PARAMETERS accordingly in `config.py`.
+- `cplex_constants`: This file contains constants used in the CPLEX module to determine variable types, constraints senses and objective status. I have defined them here so that any changes to these values can be quickly applied to the project, although these are very unlikely.
 
 The parameters used are the following:
 | PARAMETER | DESCRIPTION | TYPE |
@@ -91,35 +91,37 @@ The parameters used are the following:
 | comm_range | Communication range in meters | Float |
 | coverage_angle | Coverage angle in radians | Float |
 | n_instances | Number of instances to generate for each parameter combination | Integer |
-| cplex_workmem_limit | Cplex maximum memory in MB | Integer |
-| cplex_time_limit | Cplex maximum time in seconds | Integer |
+| cplex_workmem_limit | CPLEX maximum memory in MB | Integer |
+| cplex_time_limit | CPLEX maximum time in seconds | Integer |
 | experiment_name | Name of the experiment (becomes a folder in FILES_DIR with the results) | String |
 
-**If you make any changes to these files, run the tests again** to ensure they are valid. Keep in mind the tests only verify the dictionary referenced by PARAMETERS in `config.py`.
+**If you make any changes to these files, rerun the tests** to ensure they are valid. Remember that the tests only verify the dictionary referenced by PARAMETERS in `config.py`.
 
 ## CREATE THE SENSORS TRACES
 
-You will need to create the targets traces (sequence of sensors positions) that are the input to the models. To do so, run the following command:
+You will need to create the target traces (sequences of sensor positions) that are the input to the models. To do so, run the following command:
 
 ```bash
 make generate-traces
 ```
 
-This command verifies if the traces already exist and if they don't, creates them. These traces are saved to `fanet_deployment/files/traces/`. If you want to delete the current traces use:
+This command verifies if the traces exist, and if they don't, creates them. These traces are saved to `fanet_deployment/files/traces/`. If you want to delete the current traces use the following:
 
 ```bash
 make clean-traces
 ```
-Now that you are in an activate `fanet` virtual environment and `make check-cplex` has validated the accessiblity to the cplex model, you can execute any code in this project. The following section explains how to replicate our experiments results.
-
+Now that you are in an activated `fanet` environment (venv or conda) and `make check-cplex` has validated the accessibility to the CPLEX module, you can execute any code in this project.
 ## SOLVE MILP MODEL
 
-Once the targets traces have been created we can apply our models to them. To build and solve the Mixed-Integer Linear Program defined in [IEEE-9149781](https://ieeexplore.ieee.org/abstract/document/9149781), use:
+To build and solve the Mixed-Integer Linear Program defined in [IEEE-9149781](https://ieeexplore.ieee.org/abstract/document/9149781), use:
 
 ```bash
 make solve-milp
 ```
 
-By default, it will use DEFAULT_PARAMETERS, which save the results in `fanet_deployment/files/default/`.
+This command will solve the MILP model for each trace and each combination of parameters described by PARAMETERS. The results are all saved to `FILES_DIR + PARAMETERS["experiment_name"]`. Whenever the solution file already exists for an instance, we skip it.
+Therefore, if you change the parameters and wish to solve the same instances again, clear the results directory or change the experiment_name parameter. Remember that big instances of the problem require much time and memory. We are talking about days and tens of GB of memory for huge instances. The default parameters limit both to 3 hours and 10 GB, respectively. When CPLEX reaches these limits, we save the best solution found so far and the [solution status](https://www.ibm.com/docs/en/icos/20.1.0?topic=micclcarm-solution-status-codes-by-number-in-cplex-callable-library-c-api) accordingly. Adjust the parameters according to what is feasible for you. 
+
+Once again, if you encounter any problems, don't hesitate to contact me.
 
 
