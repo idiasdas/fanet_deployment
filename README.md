@@ -13,7 +13,10 @@ Below, I've included the instructions to reproduce our experiments. If you have 
 For this project, you will need the following:
 - **Python 3.7**: This project requires Python 3.7 specifically because of CPLEX.
     - If you don't have Python 3.7 installed, please [download and install it](https://www.python.org/downloads/release/python-3716/) first.
-    - I'm not sure about newer versions of CPLEX, but I used version 1210, and the API doesn't work with newer Python versions.
+      
+>[!NOTE]
+>I'm not sure about newer versions of CPLEX, but I used version 1210, and the API doesn't work with newer Python versions.
+
 - **CPLEX**: Ensure that CPLEX is properly installed and accessible via Python:
     - [Download and install it](https://www.ibm.com/docs/en/icos/20.1.0?topic=cplex-installing).
     - [Set the environment variable PYTHONPATH](https://www.ibm.com/docs/en/icos/20.1.0?topic=cplex-setting-up-python-api).
@@ -95,7 +98,8 @@ The parameters used are the following:
 | cplex_time_limit | CPLEX maximum time in seconds | Integer |
 | experiment_name | Name of the experiment (becomes a folder in FILES_DIR with the results) | String |
 
-**If you make any changes to these files, rerun the tests** to ensure they are valid. Remember that the tests only verify the dictionary referenced by PARAMETERS in `config.py`.
+>[!WARNING]
+>**If you make any changes to these files, rerun the tests** to ensure they are valid. Remember that the tests only verify the dictionary referenced by PARAMETERS in `config.py`.
 
 ## CREATE THE SENSORS TRACES
 
